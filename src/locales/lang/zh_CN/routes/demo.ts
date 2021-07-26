@@ -44,6 +44,7 @@ export default {
 
     time: '相对时间',
     cropperImage: '图片裁剪',
+    vexTable:'一对一VexTable'
   },
   editor: {
     editor: '编辑器',
@@ -90,6 +91,7 @@ export default {
     breadcrumbChildren: '层级模式',
     breadcrumbChildrenDetail: '层级详情',
     fullCalendar: '日历(New)',
+    codemirror: '代码高亮(New)',
   },
   flow: {
     name: '图形编辑器',
