@@ -34,6 +34,20 @@ const roleList = (() => {
   return result;
 })();
 
+const testList = (() => {
+  const result: any[] = [];
+  for (let index = 0; index < 4; index++) {
+    result.push({
+      id: index + 1,
+      orderNo: `${index + 1}`,
+      testName: ['数据1', '数据2', '数据3', '数据4'][index],
+      testValue: '@first',
+      createTime: '@datetime'
+    });
+  }
+  return result;
+})();
+
 const deptList = (() => {
   const result: any[] = [];
   for (let index = 0; index < 3; index++) {
@@ -150,6 +164,15 @@ export default [
     response: ({ query }) => {
       const { page = 1, pageSize = 20 } = query;
       return resultPageSuccess(page, pageSize, roleList);
+    },
+  },
+  {
+    url: '/basic-api/system/getTestListByPage',
+    timeout: 100,
+    method: 'get',
+    response: ({ query }) => {
+      const { page = 1, pageSize = 20 } = query;
+      return resultPageSuccess(page, pageSize, testList);
     },
   },
   {
