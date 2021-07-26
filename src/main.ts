@@ -4,7 +4,11 @@ import '/@/design/tailwind.css';
 import 'virtual:svg-icons-register';
 import App from './App.vue';
 import { createApp } from 'vue';
-import Antd from 'ant-design-vue';
+//组件注册
+import 'xe-utils'
+import VXETable from 'vxe-table'
+import 'vxe-table/lib/style.css'
+//组件注册
 import { initAppConfigStore } from '/@/logics/initAppConfig';
 import { setupErrorHandle } from '/@/logics/error-handle';
 import { router, setupRouter } from '/@/router';
@@ -13,6 +17,7 @@ import { setupStore } from '/@/store';
 import { setupGlobDirectives } from '/@/directives';
 import { setupI18n } from '/@/locales/setupI18n';
 import { registerGlobComp } from '/@/components/registerGlobComp';
+
 
 // Do not introduce on-demand in local development?
 // In the local development for introduce on-demand, the number of browser requests will increase by about 20%.
@@ -25,10 +30,9 @@ if (import.meta.env.DEV) {
 async function bootstrap() {
   const app = createApp(App);
 
-  //app.use(Antd);
   // Configure store
   setupStore(app);
-
+  app.use(VXETable)
   // Initialize internal system configuration
   initAppConfigStore();
 
