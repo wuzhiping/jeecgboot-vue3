@@ -181,6 +181,14 @@ const feat: AppRouteModule = {
       },
     },
     {
+      path: 'codemirror',
+      name: 'codemirrorDemo',
+      component: () => import('/@/views/demo/codemirror/index.vue'),
+      meta: {
+        title: t('routes.demo.feat.codemirror'),
+      },
+    },
+    {
       path: 'fullCalendar',
       name: 'fullCalendarDemo',
       component: () => import('/@/views/demo/fullcalendar/index.vue'),

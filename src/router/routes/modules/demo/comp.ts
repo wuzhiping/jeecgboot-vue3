@@ -250,6 +250,14 @@ const comp: AppRouteModule = {
       },
     },
     {
+      path: 'vexTable',
+      name: 'vexTableDemo',
+      component: () => import('/@/views/demo/vextable/index.vue'),
+      meta: {
+        title: t('routes.demo.comp.vexTable'),
+      },
+    },
+    {
       path: 'cropper',
       name: 'CropperDemo',
       component: () => import('/@/views/demo/comp/cropper/index.vue'),
