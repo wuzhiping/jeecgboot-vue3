@@ -9,6 +9,9 @@
         @submit="handleSubmit"
         @reset="handleReset"
       >
+        <template #jAreaLinkage="{ }">
+          <JAreaLinkage/>
+        </template>
         <template #localSearch="{ model, field }">
           <ApiSelect
             :api="optionsListApi"
@@ -39,7 +42,7 @@
 </template>
 <script lang="ts">
   import { computed, defineComponent, unref, ref } from 'vue';
-  import { BasicForm, FormSchema, ApiSelect } from '/@/components/Form/index';
+  import { BasicForm, FormSchema, ApiSelect,JAreaLinkage } from '/@/components/Form/index';
   import { CollapseContainer } from '/@/components/Container';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { PageWrapper } from '/@/components/Page';
@@ -325,6 +328,18 @@
       defaultValue: '0',
     },
     {
+      field: 'field311',
+      component: 'Input',
+      label: '省市区选择',
+      helpMessage: ['JAreaLinkage组件', '省市区选择'],
+      required: true,
+      slot: 'jAreaLinkage',
+      colProps: {
+        span: 8,
+      },
+      defaultValue: '0',
+    },
+    {
       field: 'field31',
       component: 'Input',
       label: '下拉本地搜索',
@@ -449,7 +464,7 @@
   ];
 
   export default defineComponent({
-    components: { BasicForm, CollapseContainer, PageWrapper, ApiSelect },
+    components: { BasicForm, CollapseContainer, PageWrapper, ApiSelect,JAreaLinkage },
     setup() {
       const check = ref(null);
       const { createMessage } = useMessage();

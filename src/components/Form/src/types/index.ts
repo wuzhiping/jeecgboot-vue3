@@ -89,6 +89,7 @@ export type ComponentType =
   | 'InputNumber'
   | 'InputCountDown'
   | 'Select'
+  | 'JAreaLinkage'
   | 'ApiSelect'
   | 'TreeSelect'
   | 'ApiTreeSelect'
