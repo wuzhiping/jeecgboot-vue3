@@ -1,64 +1,58 @@
 import '/@/design/index.less';
 import '/@/design/tailwind.css';
-// Register icon sprite
+// 注册图标
 import 'virtual:svg-icons-register';
 import App from './App.vue';
-import { createApp } from 'vue';
-//组件注册
-import 'xe-utils'
-import VXETable from 'vxe-table'
-import 'vxe-table/lib/style.css'
-//组件注册
-import { initAppConfigStore } from '/@/logics/initAppConfig';
-import { setupErrorHandle } from '/@/logics/error-handle';
-import { router, setupRouter } from '/@/router';
-import { setupRouterGuard } from '/@/router/guard';
-import { setupStore } from '/@/store';
-import { setupGlobDirectives } from '/@/directives';
-import { setupI18n } from '/@/locales/setupI18n';
-import { registerGlobComp } from '/@/components/registerGlobComp';
-
-
-// Do not introduce on-demand in local development?
-// In the local development for introduce on-demand, the number of browser requests will increase by about 20%.
-// Which may slow down the browser refresh.
-// Therefore, all are introduced in local development, and only introduced on demand in the production environment
+import {createApp} from 'vue';
+import {initAppConfigStore} from '/@/logics/initAppConfig';
+import {setupErrorHandle} from '/@/logics/error-handle';
+import {router, setupRouter} from '/@/router';
+import {setupRouterGuard} from '/@/router/guard';
+import {setupStore} from '/@/store';
+import {setupGlobDirectives} from '/@/directives';
+import {setupI18n} from '/@/locales/setupI18n';
+import {registerGlobComp} from '/@/components/registerGlobComp';
+import {registerThirdComp} from '/@/settings/registerThirdComp';
+// 在本地开发中引入的,以提高浏览器响应速度
 if (import.meta.env.DEV) {
-  import('ant-design-vue/dist/antd.less');
+    import('ant-design-vue/dist/antd.less');
 }
-
 async function bootstrap() {
-  const app = createApp(App);
+    // 创建应用实例
+    const app = createApp(App);
 
-  // Configure store
-  setupStore(app);
-  app.use(VXETable)
-  // Initialize internal system configuration
-  initAppConfigStore();
+    // 配置存储
+    setupStore(app);
 
-  // Register global components
-  registerGlobComp(app);
+    // 初始化内部系统配置
+    initAppConfigStore();
 
-  // Multilingual configuration
-  await setupI18n(app);
+    // 注册全局组件
+    registerGlobComp(app);
 
-  // Configure routing
-  setupRouter(app);
+    // 多语言配置
+    await setupI18n(app);
 
-  // router-guard
-  setupRouterGuard(router);
+    // 配置路由
+    setupRouter(app);
 
-  // Register global directive
-  setupGlobDirectives(app);
+    // 路由保护
+    setupRouterGuard(router);
 
-  // Configure global error handling
-  setupErrorHandle(app);
+    // 注册全局指令
+    setupGlobDirectives(app);
 
-  // Mount when the route is ready
-  // https://next.router.vuejs.org/api/#isready
-  await router.isReady();
+    // 配置全局错误处理
+    setupErrorHandle(app);
 
-  app.mount('#app', true);
+    // 注册第三方组件
+    registerThirdComp(app);
+
+    // 当路由准备好时在执行挂载( https://next.router.vuejs.org/api/#isready)
+    await router.isReady();
+
+    // 挂载应用
+    app.mount('#app', true);
 }
 
 void bootstrap();
