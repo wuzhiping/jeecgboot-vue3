@@ -8,7 +8,7 @@
 </template>
 
 <script lang='ts'>
-    import {defineComponent, onMounted, ref} from "vue";
+    import {defineComponent, onMounted, ref,reactive} from "vue";
     // 引入全局实例
     import _CodeMirror from 'codemirror'
 
@@ -39,7 +39,7 @@
             const CodeMirror = window.CodeMirror || _CodeMirror
 
             const textarea = ref(null)
-            const options = ref({
+            const options = reactive({
                 // 缩进格式
                 tabSize: 2,
                 // 主题，对应主题库 JS 需要提前引入
@@ -53,7 +53,7 @@
             })
 
             function init() {
-                CodeMirror.fromTextArea(textarea.value, options.value)
+                CodeMirror.fromTextArea(textarea.value, options)
             }
 
             return {
