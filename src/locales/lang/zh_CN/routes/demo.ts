@@ -44,7 +44,8 @@ export default {
 
     time: '相对时间',
     cropperImage: '图片裁剪',
-    vexTable:'一对一VexTable'
+    oneToMore:'一对多示例',
+    vexTable:'一对多示例'
   },
   editor: {
     editor: '编辑器',
@@ -182,6 +183,7 @@ export default {
     refTable: 'RefTable',
     multipleHeader: '多级表头',
     mergeHeader: '合并单元格',
+    nestedTable: '嵌套子表格',
     expandTable: '可展开表格',
     fixedHeight: '定高/头部自定义',
     footerTable: '表尾行合计',

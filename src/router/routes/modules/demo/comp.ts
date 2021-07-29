@@ -192,6 +192,14 @@ const comp: AppRouteModule = {
           },
         },
         {
+          path: 'nestedTable',
+          name: 'nestedTableDemo',
+          component: () => import('/@/views/demo/table/NestedTable.vue'),
+          meta: {
+            title: t('routes.demo.table.nestedTable'),
+          },
+        },
+        {
           path: 'expandTable',
           name: 'ExpandTableDemo',
           component: () => import('/@/views/demo/table/ExpandTable.vue'),
@@ -250,11 +258,11 @@ const comp: AppRouteModule = {
       },
     },
     {
-      path: 'vexTable',
-      name: 'vexTableDemo',
+      path: 'oneToMore',
+      name: 'oneToMoreDemo',
       component: () => import('/@/views/demo/vextable/index.vue'),
       meta: {
-        title: t('routes.demo.comp.vexTable'),
+        title: t('routes.demo.comp.oneToMore'),
       },
     },
     {

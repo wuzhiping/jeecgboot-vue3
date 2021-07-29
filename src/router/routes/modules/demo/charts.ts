@@ -38,7 +38,6 @@ const charts: AppRouteModule = {
       },
       component: () => import('/@/views/demo/charts/map/Google.vue'),
     },
-
     {
       path: 'echarts',
       name: 'Echarts',

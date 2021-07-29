@@ -1,26 +1,12 @@
 <template>
   <div ref="wrapRef" :class="getWrapperClass">
-    <BasicForm
-      submitOnReset
-      v-bind="getFormProps"
-      v-if="getBindValues.useSearchForm"
-      :tableAction="tableAction"
-      @register="registerForm"
-      @submit="handleSearchInfoChange"
-      @advanced-change="redoHeight"
-    >
+    <BasicForm submitOnReset v-bind="getFormProps" v-if="getBindValues.useSearchForm" :tableAction="tableAction" @register="registerForm" @submit="handleSearchInfoChange" @advanced-change="redoHeight">
       <template #[replaceFormSlotKey(item)]="data" v-for="item in getFormSlotKeys">
         <slot :name="item" v-bind="data"></slot>
       </template>
     </BasicForm>
 
-    <Table
-      ref="tableElRef"
-      v-bind="getBindValues"
-      :rowClassName="getRowClassName"
-      v-show="getEmptyDataIsShowTable"
-      @change="handleTableChange"
-    >
+    <Table ref="tableElRef" v-bind="getBindValues" :rowClassName="getRowClassName" v-show="getEmptyDataIsShowTable" @change="handleTableChange">
       <template #[item]="data" v-for="item in Object.keys($slots)" :key="item">
         <slot :name="item" v-bind="data"></slot>
       </template>
@@ -211,7 +197,7 @@
           // ...(dataSource.length === 0 ? { getPopupContainer: () => document.body } : {}),
           ...attrs,
           customRow,
-          expandIcon: expandIcon(),
+          expandIcon: slots.expandIcon ? null : expandIcon(),
           ...unref(getProps),
           ...unref(getHeaderProps),
           scroll: unref(getScrollRef),
