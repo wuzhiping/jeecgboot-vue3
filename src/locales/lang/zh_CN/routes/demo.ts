@@ -170,6 +170,8 @@ export default {
     menu: '菜单管理',
     test: '测试功能',
     role: '角色管理',
+    user: '用户管理',
+    roles: '角色管理(新)',
   },
   table: {
     table: 'Table',

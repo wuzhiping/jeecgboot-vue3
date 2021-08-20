@@ -36,3 +36,13 @@ export interface GetUserInfoModel {
   // 介绍
   desc?: string;
 }
+
+/**
+ * @description: Get user information return value
+ */
+export interface GetResultModel {
+  code: number;
+  message: string;
+  result:object;
+  success: Boolean;
+}

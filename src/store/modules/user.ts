@@ -83,11 +83,17 @@ export const useUserStore = defineStore({
         const { goHome = true, mode, ...loginParams } = params;
         const data = await loginApi(loginParams, mode);
         const { token } = data;
+        var { userInfo } = data;
 
         // save token
         this.setToken(token);
         // get user info
-        const userInfo = await this.getUserInfoAction();
+        if(userInfo){
+          //TODO 兼容mock和接口方式，暂时先这样处理
+          this.setUserInfo(userInfo);
+        }else{
+          userInfo = await this.getUserInfoAction();
+        }
 
         const sessionTimeout = this.sessionTimeout;
         if (sessionTimeout) {
