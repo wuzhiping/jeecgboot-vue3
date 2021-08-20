@@ -16,7 +16,7 @@ const demoList = (keyword) => {
 
 export default [
   {
-    url: '/basic-api/select/getDemoOptions',
+    url: '/jeecg-boot/select/getDemoOptions',
     timeout: 1000,
     method: 'get',
     response: ({ query }) => {

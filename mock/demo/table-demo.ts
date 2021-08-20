@@ -41,7 +41,7 @@ const demoList = (() => {
 
 export default [
   {
-    url: '/basic-api/table/getDemoList',
+    url: '/jeecg-boot/table/getDemoList',
     timeout: 100,
     method: 'get',
     response: ({ query }) => {

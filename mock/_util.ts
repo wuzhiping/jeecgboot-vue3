@@ -10,16 +10,16 @@ export function resultSuccess<T = Recordable>(result: T, { message = 'ok' } = {}
 }
 
 export function resultPageSuccess<T = any>(
-  page: number,
+  pageNo: number,
   pageSize: number,
   list: T[],
   { message = 'ok' } = {}
 ) {
-  const pageData = pagination(page, pageSize, list);
+  const pageData = pagination(pageNo, pageSize, list);
 
   return {
     ...resultSuccess({
-      items: pageData,
+      records: pageData,
       total: list.length,
     }),
     message,

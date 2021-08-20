@@ -18,6 +18,22 @@ const accountList = (() => {
     return result;
 })();
 
+const userList = (() => {
+    const result: any[] = [];
+    for (let index = 0; index < 20; index++) {
+        result.push({
+            id: `${index}`,
+            username: '@first',
+            email: '@email',
+            realname: '@cname()',
+            createTime: '@datetime',
+            remark: '@cword(10,20)',
+            avatar: 'https://q1.qlogo.cn/g?b=qq&nk=190848757&s=640'
+        });
+    }
+    return result;
+})();
+
 const roleList = (() => {
     const result: any[] = [];
     for (let index = 0; index < 4; index++) {
@@ -30,6 +46,21 @@ const roleList = (() => {
             remark: '@cword(10,20)',
             menu: [['0', '1', '2'], ['0', '1'], ['0', '2'], ['2']][index],
             'status|1': ['0', '1'],
+        });
+    }
+    return result;
+})();
+
+const newRoleList = (() => {
+    const result: any[] = [];
+    for (let index = 0; index < 4; index++) {
+        result.push({
+            id: index + 1,
+            orderNo: `${index + 1}`,
+            roleName: ['超级管理员', '管理员', '文章管理员', '普通用户'][index],
+            roleCode: '@first',
+            createTime: '@datetime',
+            remark: '@cword(10,20)'
         });
     }
     return result;
@@ -165,7 +196,7 @@ const menuList = (() => {
 
 export default [
     {
-        url: '/basic-api/system/getAccountList',
+        url: '/jeecg-boot/system/getAccountList',
         timeout: 100,
         method: 'get',
         response: ({query}) => {
@@ -174,7 +205,16 @@ export default [
         },
     },
     {
-        url: '/basic-api/system/getRoleListByPage',
+      url: '/jeecg-boot/sys/user/list',
+      timeout: 100,
+      method: 'get',
+      response: ({query}) => {
+        const {page = 1, pageSize = 20} = query;
+        return resultPageSuccess(page, pageSize, userList);
+      },
+    },
+    {
+        url: '/jeecg-boot/system/getRoleListByPage',
         timeout: 100,
         method: 'get',
         response: ({query}) => {
@@ -183,7 +223,16 @@ export default [
         },
     },
     {
-        url: '/basic-api/system/getTestListByPage',
+        url: '/jeecg-boot/sys/role/list',
+        timeout: 100,
+        method: 'get',
+        response: ({query}) => {
+            const {page = 1, pageSize = 20} = query;
+            return resultPageSuccess(page, pageSize, newRoleList);
+        },
+    },
+    {
+        url: '/jeecg-boot/system/getTestListByPage',
         timeout: 100,
         method: 'get',
         response: ({query}) => {
@@ -192,7 +241,7 @@ export default [
         },
     },
     {
-        url: '/basic-api/system/getDemoTableListByPage',
+        url: '/jeecg-boot/system/getDemoTableListByPage',
         timeout: 100,
         method: 'get',
         response: ({query}) => {
@@ -201,7 +250,7 @@ export default [
         },
     },
     {
-        url: '/basic-api/system/setRoleStatus',
+        url: '/jeecg-boot/system/setRoleStatus',
         timeout: 500,
         method: 'post',
         response: ({query}) => {
@@ -210,7 +259,7 @@ export default [
         },
     },
     {
-        url: '/basic-api/system/getAllRoleList',
+        url: '/jeecg-boot/system/getAllRoleList',
         timeout: 100,
         method: 'get',
         response: () => {
@@ -218,7 +267,7 @@ export default [
         },
     },
     {
-        url: '/basic-api/system/getDeptList',
+        url: '/jeecg-boot/system/getDeptList',
         timeout: 100,
         method: 'get',
         response: () => {
@@ -226,7 +275,7 @@ export default [
         },
     },
     {
-        url: '/basic-api/system/getMenuList',
+        url: '/jeecg-boot/system/getMenuList',
         timeout: 100,
         method: 'get',
         response: () => {
@@ -234,7 +283,7 @@ export default [
         },
     },
     {
-        url: '/basic-api/system/accountExist',
+        url: '/jeecg-boot/system/accountExist',
         timeout: 500,
         method: 'post',
         response: ({body}) => {
