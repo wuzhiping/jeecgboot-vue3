@@ -29,3 +29,11 @@ export enum ContentTypeEnum {
   // form-data  upload
   FORM_DATA = 'multipart/form-data;charset=UTF-8',
 }
+
+/**
+ * @description:  contentTyp
+ */
+export enum ConfigEnum {
+  // TOKEN
+  TOKEN = 'X-Access-Token',
+}

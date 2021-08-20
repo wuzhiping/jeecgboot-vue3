@@ -2,7 +2,7 @@ import { defHttp } from '/@/utils/http/axios';
 import { getMenuListResultModel } from './model/menuModel';
 
 enum Api {
-  GetMenuList = '/getMenuList',
+  GetMenuList = '/sys/permission/getUserPermissionByToken',
 }
 
 /**
@@ -10,5 +10,14 @@ enum Api {
  */
 
 export const getMenuList = () => {
-  return defHttp.get<getMenuListResultModel>({ url: Api.GetMenuList });
+  return new Promise((resolve, reject) => {
+    //为了兼容mock和接口数据
+    defHttp.get<getMenuListResultModel>({ url: Api.GetMenuList }).then(res=>{
+      if(Array.isArray(res)){
+        resolve(res)
+      }else{
+        resolve(res.menu)
+      }
+    });
+  })
 };

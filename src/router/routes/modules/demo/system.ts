@@ -24,6 +24,15 @@ const system: AppRouteModule = {
       component: () => import('/@/views/demo/system/test/index.vue'),
     },
     {
+      path: 'user',
+      name: 'userList',
+      meta: {
+        title: t('routes.demo.system.user'),
+        ignoreKeepAlive: true,
+      },
+      component: () => import('/@/views/demo/system/user/index.vue'),
+    },
+    {
       path: 'account',
       name: 'AccountManagement',
       meta: {
@@ -53,7 +62,15 @@ const system: AppRouteModule = {
       },
       component: () => import('/@/views/demo/system/role/index.vue'),
     },
-
+    {
+      path: 'roles',
+      name: 'Roles',
+      meta: {
+        title: t('routes.demo.system.roles'),
+        ignoreKeepAlive: true,
+      },
+      component: () => import('/@/views/demo/system/roles/index.vue'),
+    },
     {
       path: 'menu',
       name: 'MenuManagement',

@@ -18,9 +18,15 @@ export type RolePageParams = BasicPageParams & RoleParams;
 
 export type TestPageParams = BasicPageParams & TestParams;
 
+export type UserPageParams = BasicPageParams & UserParams;
+
 export type DeptParams = {
   deptName?: string;
   status?: string;
+};
+
+export type UserParams = {
+  username?: string;
 };
 
 export type MenuParams = {
@@ -72,6 +78,13 @@ export interface TestListItem {
   createTime: string;
 }
 
+export interface UserListItem {
+  id: string;
+  username: string;
+  password: string;
+  realname: string;
+}
+
 /**
  * @description: Request list return value
  */
@@ -86,3 +99,5 @@ export type RolePageListGetResultModel = BasicFetchResult<RoleListItem>;
 export type RoleListGetResultModel = RoleListItem[];
 
 export type TestListGetResultModel = TestListItem[];
+
+export type UserListGetResultModel = UserListItem[];

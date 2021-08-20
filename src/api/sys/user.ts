@@ -4,10 +4,13 @@ import { LoginParams, LoginResultModel, GetUserInfoModel } from './model/userMod
 import { ErrorMessageMode } from '/#/axios';
 
 enum Api {
-  Login = '/login',
-  Logout = '/logout',
-  GetUserInfo = '/getUserInfo',
+ 
+  Login = '/sys/login',
+  Logout = '/sys/logout',
+  GetUserInfo = '/sys/getUserInfo',
   GetPermCode = '/getPermCode',
+  //新加的获取验证码的接口
+  getInputCode = '/sys/randomImage'
 }
 
 /**
@@ -38,4 +41,9 @@ export function getPermCode() {
 
 export function doLogout() {
   return defHttp.get({ url: Api.Logout });
+}
+
+export function getCodeInfo(currdatetime) {
+  let url = Api.getInputCode+`/${currdatetime}`
+  return defHttp.get({ url: url });
 }
