@@ -76,7 +76,6 @@ export function createPermissionGuard(router: Router) {
                 await userStore.getUserInfoAction();
             } catch (err) {
                 next();
-                return;
             }
         }
 

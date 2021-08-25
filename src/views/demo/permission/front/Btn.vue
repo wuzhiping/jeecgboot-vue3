@@ -24,7 +24,6 @@
       </a-button-group>
     </div>
     <Divider>组件方式判断权限(有需要可以自行全局注册)</Divider>
-
     <Authority :value="RoleEnum.SUPER">
       <a-button type="primary" class="mx-4"> 拥有super角色权限可见 </a-button>
     </Authority>
@@ -58,13 +57,10 @@
     <a-button v-auth="[RoleEnum.TEST, RoleEnum.SUPER]" color="error" class="mx-4">
       拥有[test,super]角色权限可见
     </a-button>
-
   </PageWrapper>
-
-  <CodeEditor v-model:value="value" :mode="modeValue" />
 </template>
 <script lang="ts">
-  import {computed, defineComponent, ref} from 'vue';
+  import { computed, defineComponent } from 'vue';
   import { Alert, Divider } from 'ant-design-vue';
   import CurrentPermissionMode from '../CurrentPermissionMode.vue';
   import { useUserStore } from '/@/store/modules/user';
@@ -72,20 +68,15 @@
   import { usePermission } from '/@/hooks/web/usePermission';
   import { Authority } from '/@/components/Authority';
   import { PageWrapper } from '/@/components/Page';
-  import { CodeEditor } from '/@/components/CodeEditor';
+
   export default defineComponent({
-    components: { Alert, PageWrapper, CurrentPermissionMode, Divider, Authority ,CodeEditor},
+    components: { Alert, PageWrapper, CurrentPermissionMode, Divider, Authority },
     setup() {
       const { changeRole, hasPermission } = usePermission();
       const userStore = useUserStore();
-      const modeValue = ref('javascript');
-      const value = ref("组件方式判断权限:<Authority :value=\"RoleEnum.SUPER\"> </Authority>\n" +
-              "函数方式方式判断权限:v-if=\"hasPermission(RoleEnum.SUPER)\"\n" +
-              "指令方式方式判断权限:v-auth=\"[RoleEnum.TEST, RoleEnum.SUPER]\"  v-auth=\"RoleEnum.SUPER\"");
+
       return {
         userStore,
-        modeValue,
-        value,
         RoleEnum,
         isSuper: computed(() => userStore.getRoleList.includes(RoleEnum.SUPER)),
         isTest: computed(() => userStore.getRoleList.includes(RoleEnum.TEST)),
