@@ -1,4 +1,5 @@
 <template>
+
   <BasicModal
           width="800px"
           :title="t('component.upload.upload')"
