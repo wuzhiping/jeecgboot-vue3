@@ -31,12 +31,12 @@
     height?: string | number;
     placeholder?: string | boolean;
     preview?:
-      | boolean
-      | {
-          visible?: boolean;
-          onVisibleChange?: (visible: boolean, prevVisible: boolean) => void;
-          getContainer: string | HTMLElement | (() => HTMLElement);
-        };
+            | boolean
+            | {
+      visible?: boolean;
+      onVisibleChange?: (visible: boolean, prevVisible: boolean) => void;
+      getContainer: string | HTMLElement | (() => HTMLElement);
+    };
   }
 
   type ImageItem = string | ImageProps;
@@ -56,7 +56,7 @@
     setup(props) {
       const { prefixCls } = useDesign('image-preview');
 
-      const getImageList = computed(() => {
+      const getImageList = computed((): any[] => {
         const { imageList } = props;
         if (!imageList) {
           return [];

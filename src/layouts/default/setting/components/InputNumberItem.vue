@@ -2,10 +2,10 @@
   <div :class="prefixCls">
     <span> {{ title }}</span>
     <InputNumber
-      v-bind="$attrs"
-      size="small"
-      :class="`${prefixCls}-input-number`"
-      @change="handleChange"
+            v-bind="$attrs"
+            size="small"
+            :class="`${prefixCls}-input-number`"
+            @change="handleChange"
     />
   </div>
 </template>
@@ -31,7 +31,7 @@
     setup(props) {
       const { prefixCls } = useDesign('setting-input-number-item');
 
-      function handleChange(e: ChangeEvent) {
+      function handleChange(e) {
         props.event && baseHandler(props.event, e);
       }
       return {

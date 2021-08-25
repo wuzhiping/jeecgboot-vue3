@@ -1,14 +1,14 @@
 import type { BasicColumn, BasicTableProps, CellFormat, GetColumnsParams } from '../types/table';
 import type { PaginationProps } from '../types/pagination';
 import type { ComputedRef } from 'vue';
-import { unref, Ref, computed, watch, ref, toRaw } from 'vue';
+import { computed, Ref, ref, toRaw, unref, watch } from 'vue';
 import { renderEditCell } from '../components/editable';
 import { usePermission } from '/@/hooks/web/usePermission';
 import { useI18n } from '/@/hooks/web/useI18n';
-import { isBoolean, isArray, isString, isObject, isFunction } from '/@/utils/is';
-import { isEqual, cloneDeep } from 'lodash-es';
+import { isArray, isBoolean, isFunction, isMap, isString } from '/@/utils/is';
+import { cloneDeep, isEqual } from 'lodash-es';
 import { formatToDate } from '/@/utils/dateUtil';
-import { DEFAULT_ALIGN, PAGE_SIZE, INDEX_COLUMN_FLAG, ACTION_COLUMN_FLAG } from '../const';
+import { ACTION_COLUMN_FLAG, DEFAULT_ALIGN, INDEX_COLUMN_FLAG, PAGE_SIZE } from '../const';
 
 function handleItem(item: BasicColumn, ellipsis: boolean) {
   const { key, dataIndex, children } = item;
@@ -38,9 +38,9 @@ function handleChildren(children: BasicColumn[] | undefined, ellipsis: boolean) 
 }
 
 function handleIndexColumn(
-  propsRef: ComputedRef<BasicTableProps>,
-  getPaginationRef: ComputedRef<boolean | PaginationProps>,
-  columns: BasicColumn[]
+    propsRef: ComputedRef<BasicTableProps>,
+    getPaginationRef: ComputedRef<boolean | PaginationProps>,
+    columns: BasicColumn[]
 ) {
   const { t } = useI18n();
 
@@ -77,10 +77,10 @@ function handleIndexColumn(
       return ((current < 1 ? 1 : current) - 1) * pageSize + index + 1;
     },
     ...(isFixedLeft
-      ? {
+        ? {
           fixed: 'left',
         }
-      : {}),
+        : {}),
     ...indexColumnProps,
   });
 }
@@ -101,8 +101,8 @@ function handleActionColumn(propsRef: ComputedRef<BasicTableProps>, columns: Bas
 }
 
 export function useColumns(
-  propsRef: ComputedRef<BasicTableProps>,
-  getPaginationRef: ComputedRef<boolean | PaginationProps>
+    propsRef: ComputedRef<BasicTableProps>,
+    getPaginationRef: ComputedRef<boolean | PaginationProps>
 ) {
   const columnsRef = ref(unref(propsRef).columns) as unknown as Ref<BasicColumn[]>;
   let cacheColumns = unref(propsRef).columns;
@@ -121,8 +121,8 @@ export function useColumns(
       const { customRender, slots } = item;
 
       handleItem(
-        item,
-        Reflect.has(item, 'ellipsis') ? !!item.ellipsis : !!ellipsis && !customRender && !slots
+          item,
+          Reflect.has(item, 'ellipsis') ? !!item.ellipsis : !!ellipsis && !customRender && !slots
       );
     });
     return columns;
@@ -148,38 +148,38 @@ export function useColumns(
 
     const columns = cloneDeep(viewColumns);
     return columns
-      .filter((column) => {
-        return hasPermission(column.auth) && isIfShow(column);
-      })
-      .map((column) => {
-        const { slots, dataIndex, customRender, format, edit, editRow, flag } = column;
+        .filter((column) => {
+          return hasPermission(column.auth) && isIfShow(column);
+        })
+        .map((column) => {
+          const { slots, dataIndex, customRender, format, edit, editRow, flag } = column;
 
-        if (!slots || !slots?.title) {
-          column.slots = { title: `header-${dataIndex}`, ...(slots || {}) };
-          column.customTitle = column.title;
-          Reflect.deleteProperty(column, 'title');
-        }
-        const isDefaultAction = [INDEX_COLUMN_FLAG, ACTION_COLUMN_FLAG].includes(flag!);
-        if (!customRender && format && !edit && !isDefaultAction) {
-          column.customRender = ({ text, record, index }) => {
-            return formatCell(text, format, record, index);
-          };
-        }
+          if (!slots || !slots?.title) {
+            column.slots = { title: `header-${dataIndex}`, ...(slots || {}) };
+            column.customTitle = column.title;
+            Reflect.deleteProperty(column, 'title');
+          }
+          const isDefaultAction = [INDEX_COLUMN_FLAG, ACTION_COLUMN_FLAG].includes(flag!);
+          if (!customRender && format && !edit && !isDefaultAction) {
+            column.customRender = ({ text, record, index }) => {
+              return formatCell(text, format, record, index);
+            };
+          }
 
-        // edit table
-        if ((edit || editRow) && !isDefaultAction) {
-          column.customRender = renderEditCell(column);
-        }
-        return column;
-      });
+          // edit table
+          if ((edit || editRow) && !isDefaultAction) {
+            column.customRender = renderEditCell(column);
+          }
+          return column;
+        });
   });
 
   watch(
-    () => unref(propsRef).columns,
-    (columns) => {
-      columnsRef.value = columns;
-      cacheColumns = columns?.filter((item) => !item.flag) ?? [];
-    }
+      () => unref(propsRef).columns,
+      (columns) => {
+        columnsRef.value = columns;
+        cacheColumns = columns?.filter((item) => !item.flag) ?? [];
+      }
   );
 
   function setCacheColumnsByField(dataIndex: string | undefined, value: Partial<BasicColumn>) {
@@ -233,8 +233,8 @@ export function useColumns(
       if (!isEqual(cacheKeys, columns)) {
         newColumns.sort((prev, next) => {
           return (
-            cacheKeys.indexOf(prev.dataIndex as string) -
-            cacheKeys.indexOf(next.dataIndex as string)
+              cacheKeys.indexOf(prev.dataIndex as string) -
+              cacheKeys.indexOf(next.dataIndex as string)
           );
         });
       }
@@ -287,11 +287,9 @@ function sortFixedColumn(columns: BasicColumn[]) {
     }
     defColumns.push(column);
   }
-  const resultColumns = [...fixedLeftColumns, ...defColumns, ...fixedRightColumns].filter(
-    (item) => !item.defaultHidden
+  return [...fixedLeftColumns, ...defColumns, ...fixedRightColumns].filter(
+      (item) => !item.defaultHidden
   );
-
-  return resultColumns;
 }
 
 // format cell
@@ -317,8 +315,8 @@ export function formatCell(text: string, format: CellFormat, record: Recordable,
       return formatToDate(text, dateFormat);
     }
 
-    // enum
-    if (isObject(format) && Reflect.has(format, 'size')) {
+    // Map
+    if (isMap(format)) {
       return format.get(text);
     }
   } catch (error) {

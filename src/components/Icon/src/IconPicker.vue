@@ -1,24 +1,24 @@
 <template>
   <a-input
-    disabled
-    :style="{ width }"
-    :placeholder="t('component.icon.placeholder')"
-    :class="prefixCls"
-    v-model:value="currentSelect"
+          disabled
+          :style="{ width }"
+          :placeholder="t('component.icon.placeholder')"
+          :class="prefixCls"
+          v-model:value="currentSelect"
   >
     <template #addonAfter>
       <Popover
-        placement="bottomLeft"
-        trigger="click"
-        v-model="visible"
-        :overlayClassName="`${prefixCls}-popover`"
+              placement="bottomLeft"
+              trigger="click"
+              v-model="visible"
+              :overlayClassName="`${prefixCls}-popover`"
       >
         <template #title>
           <div class="flex justify-between">
             <a-input
-              :placeholder="t('component.icon.search')"
-              @change="handleSearchChange"
-              allowClear
+                    :placeholder="t('component.icon.search')"
+                    @change="handleSearchChange"
+                    allowClear
             />
           </div>
         </template>
@@ -28,10 +28,10 @@
             <ScrollContainer class="border border-solid border-t-0">
               <ul class="flex flex-wrap px-2">
                 <li
-                  v-for="icon in getPaginationList"
-                  :key="icon"
-                  :class="currentSelect === icon ? 'border border-primary' : ''"
-                  class="
+                        v-for="icon in getPaginationList"
+                        :key="icon"
+                        :class="currentSelect === icon ? 'border border-primary' : ''"
+                        class="
                     p-2
                     w-1/8
                     cursor-pointer
@@ -43,8 +43,8 @@
                     border border-solid
                     hover:border-primary
                   "
-                  @click="handleClick(icon)"
-                  :title="icon"
+                        @click="handleClick(icon)"
+                        :title="icon"
                 >
                   <!-- <Icon :icon="icon" :prefix="prefix" /> -->
                   <SvgIcon v-if="isSvgMode" :name="icon" />
@@ -54,16 +54,16 @@
             </ScrollContainer>
             <div class="flex py-2 items-center justify-center" v-if="getTotal >= pageSize">
               <Pagination
-                showLessItems
-                size="small"
-                :pageSize="pageSize"
-                :total="getTotal"
-                @change="handlePageChange"
+                      showLessItems
+                      size="small"
+                      :pageSize="pageSize"
+                      :total="getTotal"
+                      @change="handlePageChange"
               />
             </div>
           </div>
           <template v-else
-            ><div class="p-5"> <Empty /></div>
+          ><div class="p-5"> <Empty /></div>
           </template>
         </template>
 
@@ -121,7 +121,7 @@
       copy: propTypes.bool.def(false),
       mode: propTypes.oneOf<('svg' | 'iconify')[]>(['svg', 'iconify']).def('iconify'),
     },
-    emits: ['change'],
+    emits: ['change', 'update:value'],
     setup(props, { emit }) {
       const isSvgMode = props.mode === 'svg';
       const icons = isSvgMode ? getSvgIcons() : getIcons();
@@ -138,8 +138,8 @@
       const { createMessage } = useMessage();
 
       const { getPaginationList, getTotal, setCurrentPage } = usePagination(
-        currentList,
-        props.pageSize
+              currentList,
+              props.pageSize
       );
 
       watchEffect(() => {
@@ -147,8 +147,11 @@
       });
 
       watch(
-        () => currentSelect.value,
-        (v) => emit('change', v)
+              () => currentSelect.value,
+              (v) => {
+                emit('update:value', v);
+                return emit('change', v);
+              }
       );
 
       function handlePageChange(page: number) {

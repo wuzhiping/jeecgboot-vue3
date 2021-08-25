@@ -5,11 +5,11 @@
         <div :class="`${prefixCls}-content`" v-click-outside="handleClose">
           <div :class="`${prefixCls}-input__wrapper`">
             <a-input
-              :class="`${prefixCls}-input`"
-              :placeholder="t('common.searchText')"
-              ref="inputRef"
-              allow-clear
-              @change="handleSearch"
+                    :class="`${prefixCls}-input`"
+                    :placeholder="t('common.searchText')"
+                    ref="inputRef"
+                    allow-clear
+                    @change="handleSearch"
             >
               <template #prefix>
                 <SearchOutlined />
@@ -26,13 +26,13 @@
 
           <ul :class="`${prefixCls}-list`" v-show="!getIsNotData" ref="scrollWrap">
             <li
-              :ref="setRefs(index)"
-              v-for="(item, index) in searchResult"
-              :key="item.path"
-              :data-index="index"
-              @mouseenter="handleMouseenter"
-              @click="handleEnter"
-              :class="[
+                    :ref="setRefs(index)"
+                    v-for="(item, index) in searchResult"
+                    :key="item.path"
+                    :data-index="index"
+                    @mouseenter="handleMouseenter"
+                    @click="handleEnter"
+                    :class="[
                 `${prefixCls}-list__item`,
                 {
                   [`${prefixCls}-list__item--active`]: activeIndex === index,
@@ -56,85 +56,62 @@
     </transition>
   </Teleport>
 </template>
-<script lang="ts">
-  import { defineComponent, computed, unref, ref, watch, nextTick } from 'vue';
+
+<script lang="ts" setup>
+  import { computed, unref, ref, watch, nextTick } from 'vue';
   import { SearchOutlined } from '@ant-design/icons-vue';
   import AppSearchFooter from './AppSearchFooter.vue';
   import Icon from '/@/components/Icon';
-  import clickOutside from '/@/directives/clickOutside';
+  // @ts-ignore
+  import vClickOutside from '/@/directives/clickOutside';
   import { useDesign } from '/@/hooks/web/useDesign';
   import { useRefs } from '/@/hooks/core/useRefs';
   import { useMenuSearch } from './useMenuSearch';
   import { useI18n } from '/@/hooks/web/useI18n';
   import { useAppInject } from '/@/hooks/web/useAppInject';
 
-  const props = {
+  const props = defineProps({
     visible: { type: Boolean },
-  };
+  });
 
-  export default defineComponent({
-    name: 'AppSearchModal',
-    components: { Icon, SearchOutlined, AppSearchFooter },
-    directives: {
-      clickOutside,
-    },
-    props,
-    emits: ['close'],
-    setup(props, { emit }) {
-      const scrollWrap = ref<ElRef>(null);
-      const inputRef = ref<Nullable<HTMLElement>>(null);
+  const emit = defineEmits(['close']);
 
-      const { t } = useI18n();
-      const { prefixCls } = useDesign('app-search-modal');
-      const [refs, setRefs] = useRefs();
-      const { getIsMobile } = useAppInject();
+  const scrollWrap = ref(null);
+  const inputRef = ref<Nullable<HTMLElement>>(null);
 
-      const { handleSearch, searchResult, keyword, activeIndex, handleEnter, handleMouseenter } =
-        useMenuSearch(refs, scrollWrap, emit);
+  const { t } = useI18n();
+  const { prefixCls } = useDesign('app-search-modal');
+  const [refs, setRefs] = useRefs();
+  const { getIsMobile } = useAppInject();
 
-      const getIsNotData = computed(() => !keyword || unref(searchResult).length === 0);
+  const { handleSearch, searchResult, keyword, activeIndex, handleEnter, handleMouseenter } =
+          useMenuSearch(refs, scrollWrap, emit);
 
-      const getClass = computed(() => {
-        return [
-          prefixCls,
-          {
-            [`${prefixCls}--mobile`]: unref(getIsMobile),
-          },
-        ];
-      });
+  const getIsNotData = computed(() => !keyword || unref(searchResult).length === 0);
 
-      watch(
-        () => props.visible,
-        (visible: boolean) => {
-          visible &&
+  const getClass = computed(() => {
+    return [
+      prefixCls,
+      {
+        [`${prefixCls}--mobile`]: unref(getIsMobile),
+      },
+    ];
+  });
+
+  watch(
+          () => props.visible,
+          (visible: boolean) => {
+            visible &&
             nextTick(() => {
               unref(inputRef)?.focus();
             });
-        }
-      );
+          }
+  );
 
-      function handleClose() {
-        searchResult.value = [];
-        emit('close');
-      }
-
-      return {
-        t,
-        prefixCls,
-        getClass,
-        handleSearch,
-        searchResult,
-        activeIndex,
-        getIsNotData,
-        handleEnter,
-        setRefs,
-        scrollWrap,
-        handleMouseenter,
-        handleClose,
-        inputRef,
-      };
-    },
-  });
+  function handleClose() {
+    searchResult.value = [];
+    emit('close');
+  }
 </script>
 <style lang="less" scoped>
   @prefix-cls: ~'@{namespace}-app-search-modal';

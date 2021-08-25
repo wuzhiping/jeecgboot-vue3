@@ -1,5 +1,10 @@
 import '/@/design/index.less';
-import '/@/design/tailwind.css';
+// 注册 windi
+// import 'virtual:windi.css';
+import 'virtual:windi-base.css';
+import 'virtual:windi-components.css';
+import 'virtual:windi-utilities.css';
+import 'virtual:windi-devtools';
 // 注册图标
 import 'virtual:svg-icons-register';
 import App from './App.vue';
@@ -30,7 +35,7 @@ async function bootstrap() {
     // 注册全局组件
     registerGlobComp(app);
 
-    // 多语言配置
+    // 多语言配置,异步情况:语言文件可以从服务器端获得
     await setupI18n(app);
 
     // 配置路由
@@ -55,4 +60,4 @@ async function bootstrap() {
     app.mount('#app', true);
 }
 
-void bootstrap();
+bootstrap();

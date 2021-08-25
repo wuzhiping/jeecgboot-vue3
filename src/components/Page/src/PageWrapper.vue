@@ -1,11 +1,11 @@
 <template>
   <div :class="getClass" ref="wrapperRef">
     <PageHeader
-      :ghost="ghost"
-      :title="title"
-      v-bind="$attrs"
-      ref="headerRef"
-      v-if="content || $slots.headerContent || title || getHeaderSlots.length"
+            :ghost="ghost"
+            :title="title"
+            v-bind="omit($attrs, 'class')"
+            ref="headerRef"
+            v-if="content || $slots.headerContent || title || getHeaderSlots.length"
     >
       <template #default>
         <template v-if="content">
@@ -14,7 +14,7 @@
         <slot name="headerContent" v-else></slot>
       </template>
       <template #[item]="data" v-for="item in getHeaderSlots">
-        <slot :name="item" v-bind="data"></slot>
+        <slot :name="item" v-bind="data || {}"></slot>
       </template>
     </PageHeader>
 
@@ -33,7 +33,7 @@
   </div>
 </template>
 <script lang="ts">
-  import type { CSSProperties, PropType } from 'vue';
+  import { CSSProperties, PropType, provide } from 'vue';
 
   import { defineComponent, computed, watch, ref, unref } from 'vue';
   import PageFooter from './PageFooter.vue';
@@ -43,6 +43,7 @@
   import { omit } from 'lodash-es';
   import { PageHeader } from 'ant-design-vue';
   import { useContentHeight } from '/@/hooks/web/useContentHeight';
+  import { PageWrapperFixedHeightKey } from '..';
 
   export default defineComponent({
     name: 'PageWrapper',
@@ -61,22 +62,27 @@
       contentClass: propTypes.string,
       fixedHeight: propTypes.bool,
     },
-    setup(props, { slots }) {
+    setup(props, { slots, attrs }) {
       const wrapperRef = ref(null);
       const headerRef = ref(null);
       const contentRef = ref(null);
       const footerRef = ref(null);
       const { prefixCls } = useDesign('page-wrapper');
 
+      provide(
+              PageWrapperFixedHeightKey,
+              computed(() => props.fixedHeight)
+      );
+
       const getIsContentFullHeight = computed(() => {
         return props.contentFullHeight;
       });
 
       const { redoHeight, setCompensation, contentHeight } = useContentHeight(
-        getIsContentFullHeight,
-        wrapperRef,
-        [headerRef, footerRef],
-        [contentRef]
+              getIsContentFullHeight,
+              wrapperRef,
+              [headerRef, footerRef],
+              [contentRef]
       );
       setCompensation({ useLayoutFooter: true, elements: [footerRef] });
 
@@ -86,6 +92,7 @@
           {
             [`${prefixCls}--dense`]: props.dense,
           },
+          attrs.class ?? {},
         ];
       });
 
@@ -121,14 +128,14 @@
       });
 
       watch(
-        () => [getShowFooter.value],
-        () => {
-          redoHeight();
-        },
-        {
-          flush: 'post',
-          immediate: true,
-        }
+              () => [getShowFooter.value],
+              () => {
+                redoHeight();
+              },
+              {
+                flush: 'post',
+                immediate: true,
+              }
       );
 
       return {

@@ -82,12 +82,12 @@
       });
 
       watch(
-        () => props.openNames,
-        () => {
-          nextTick(() => {
-            updateOpened();
-          });
-        }
+              () => props.openNames,
+              () => {
+                nextTick(() => {
+                  updateOpened();
+                });
+              }
       );
 
       function updateOpened() {
@@ -124,7 +124,7 @@
         isRemoveAllPopup,
         sliceIndex,
         level: 0,
-        props,
+        props: props as any,
       });
 
       onMounted(() => {

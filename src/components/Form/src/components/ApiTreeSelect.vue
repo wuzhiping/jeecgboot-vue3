@@ -1,39 +1,38 @@
 <template>
     <a-tree-select v-bind="getAttrs" @change="handleChange">
         <template #[item]="data" v-for="item in Object.keys($slots)">
-            <slot :name="item" v-bind="data"></slot>
+            <slot :name="item" v-bind="data || {}"></slot>
         </template>
         <template #suffixIcon v-if="loading">
-            <LoadingOutlined spin/>
+            <LoadingOutlined spin />
         </template>
     </a-tree-select>
 </template>
 
 <script lang="ts">
-    import {computed, defineComponent, watch, ref, onMounted, unref} from 'vue';
-    import {TreeSelect} from 'ant-design-vue';
-    import {isArray, isFunction} from '/@/utils/is';
-    import {get} from 'lodash-es';
-    import {propTypes} from '/@/utils/propTypes';
-    import {LoadingOutlined} from '@ant-design/icons-vue';
-
+    import { computed, defineComponent, watch, ref, onMounted, unref } from 'vue';
+    import { TreeSelect } from 'ant-design-vue';
+    import { isArray, isFunction } from '/@/utils/is';
+    import { get } from 'lodash-es';
+    import { propTypes } from '/@/utils/propTypes';
+    import { LoadingOutlined } from '@ant-design/icons-vue';
     export default defineComponent({
         name: 'ApiTreeSelect',
-        components: {ATreeSelect: TreeSelect, LoadingOutlined},
+        components: { ATreeSelect: TreeSelect, LoadingOutlined },
         props: {
-            api: {type: Function as PropType<(arg?: Recordable) => Promise<Recordable>>},
-            params: {type: Object},
-            immediate: {type: Boolean, default: true},
+            api: { type: Function as PropType<(arg?: Recordable) => Promise<Recordable>> },
+            params: { type: Object },
+            immediate: { type: Boolean, default: true },
             resultField: propTypes.string.def(''),
         },
         emits: ['options-change', 'change'],
-        setup(props, {attrs, emit}) {
+        setup(props, { attrs, emit }) {
             const treeData = ref<Recordable[]>([]);
             const isFirstLoaded = ref<Boolean>(false);
             const loading = ref(false);
             const getAttrs = computed(() => {
                 return {
-                    ...(props.api ? {treeData: unref(treeData)} : {}),
+                    ...(props.api ? { treeData: unref(treeData) } : {}),
                     ...attrs,
                 };
             });
@@ -47,7 +46,7 @@
                 () => {
                     isFirstLoaded.value && fetch();
                 },
-                {deep: true}
+                { deep: true }
             );
 
             watch(
@@ -62,7 +61,7 @@
             });
 
             async function fetch() {
-                const {api} = props;
+                const { api } = props;
                 if (!api || !isFunction(api)) return;
                 loading.value = true;
                 treeData.value = [];
@@ -81,8 +80,7 @@
                 isFirstLoaded.value = true;
                 emit('options-change', treeData.value);
             }
-
-            return {getAttrs, loading, handleChange};
+            return { getAttrs, loading, handleChange };
         },
     });
 </script>

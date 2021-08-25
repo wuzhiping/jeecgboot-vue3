@@ -2,49 +2,49 @@
   <Modal v-bind="getBindValue" @cancel="handleCancel">
     <template #closeIcon v-if="!$slots.closeIcon">
       <ModalClose
-        :canFullscreen="getProps.canFullscreen"
-        :fullScreen="fullScreenRef"
-        @cancel="handleCancel"
-        @fullscreen="handleFullScreen"
+              :canFullscreen="getProps.canFullscreen"
+              :fullScreen="fullScreenRef"
+              @cancel="handleCancel"
+              @fullscreen="handleFullScreen"
       />
     </template>
 
     <template #title v-if="!$slots.title">
       <ModalHeader
-        :helpMessage="getProps.helpMessage"
-        :title="getMergeProps.title"
-        @dblclick="handleTitleDbClick"
+              :helpMessage="getProps.helpMessage"
+              :title="getMergeProps.title"
+              @dblclick="handleTitleDbClick"
       />
     </template>
 
     <template #footer v-if="!$slots.footer">
       <ModalFooter v-bind="getBindValue" @ok="handleOk" @cancel="handleCancel">
         <template #[item]="data" v-for="item in Object.keys($slots)">
-          <slot :name="item" v-bind="data"></slot>
+          <slot :name="item" v-bind="data || {}"></slot>
         </template>
       </ModalFooter>
     </template>
 
     <ModalWrapper
-      :useWrapper="getProps.useWrapper"
-      :footerOffset="wrapperFooterOffset"
-      :fullScreen="fullScreenRef"
-      ref="modalWrapperRef"
-      :loading="getProps.loading"
-      :loading-tip="getProps.loadingTip"
-      :minHeight="getProps.minHeight"
-      :height="getWrapperHeight"
-      :visible="visibleRef"
-      :modalFooterHeight="footer !== undefined && !footer ? 0 : undefined"
-      v-bind="omit(getProps.wrapperProps, 'visible', 'height', 'modalFooterHeight')"
-      @ext-height="handleExtHeight"
-      @height-change="handleHeightChange"
+            :useWrapper="getProps.useWrapper"
+            :footerOffset="wrapperFooterOffset"
+            :fullScreen="fullScreenRef"
+            ref="modalWrapperRef"
+            :loading="getProps.loading"
+            :loading-tip="getProps.loadingTip"
+            :minHeight="getProps.minHeight"
+            :height="getWrapperHeight"
+            :visible="visibleRef"
+            :modalFooterHeight="footer !== undefined && !footer ? 0 : undefined"
+            v-bind="omit(getProps.wrapperProps, 'visible', 'height', 'modalFooterHeight')"
+            @ext-height="handleExtHeight"
+            @height-change="handleHeightChange"
     >
       <slot></slot>
     </ModalWrapper>
 
     <template #[item]="data" v-for="item in Object.keys(omit($slots, 'default'))">
-      <slot :name="item" v-bind="data"></slot>
+      <slot :name="item" v-bind="data || {}"></slot>
     </template>
   </Modal>
 </template>
@@ -104,7 +104,7 @@
       }
 
       // Custom title component: get title
-      const getMergeProps = computed((): ModalProps => {
+      const getMergeProps = computed((): Recordable => {
         return {
           ...props,
           ...(unref(propsRef) as any),
@@ -118,7 +118,7 @@
       });
 
       // modal component does not need title and origin buttons
-      const getProps = computed((): ModalProps => {
+      const getProps = computed((): Recordable => {
         const opt = {
           ...unref(getMergeProps),
           visible: unref(visibleRef),
@@ -140,9 +140,9 @@
           wrapClassName: unref(getWrapClassName),
         };
         if (unref(fullScreenRef)) {
-          return omit(attr, 'height');
+          return omit(attr, ['height', 'title']);
         }
-        return attr;
+        return omit(attr, 'title');
       });
 
       const getWrapperHeight = computed(() => {
@@ -156,20 +156,20 @@
       });
 
       watch(
-        () => unref(visibleRef),
-        (v) => {
-          emit('visible-change', v);
-          emit('update:visible', v);
-          instance && modalMethods.emitVisible?.(v, instance.uid);
-          nextTick(() => {
-            if (props.scrollTop && v && unref(modalWrapperRef)) {
-              (unref(modalWrapperRef) as any).scrollTop();
-            }
-          });
-        },
-        {
-          immediate: false,
-        }
+              () => unref(visibleRef),
+              (v) => {
+                emit('visible-change', v);
+                emit('update:visible', v);
+                instance && modalMethods.emitVisible?.(v, instance.uid);
+                nextTick(() => {
+                  if (props.scrollTop && v && unref(modalWrapperRef)) {
+                    (unref(modalWrapperRef) as any).scrollTop();
+                  }
+                });
+              },
+              {
+                immediate: false,
+              }
       );
 
       // 取消事件
@@ -212,7 +212,7 @@
         extHeightRef.value = height;
       }
 
-      function handleTitleDbClick(e: ChangeEvent) {
+      function handleTitleDbClick(e) {
         if (!props.canFullscreen) return;
         e.stopPropagation();
         handleFullScreen(e);

@@ -43,7 +43,7 @@
                     <CheckboxGroup v-model:value="checkedList" @change="onChange" ref="columnListRef">
                         <template v-for="item in plainOptions" :key="item.value">
                             <div :class="`${prefixCls}__check-item`">
-                                <DragOutlined class="table-coulmn-drag-icon"/>
+                                <DragOutlined class="table-coulmn-drag-icon" />
                                 <Checkbox :value="item.value">
                                     {{ item.label }}
                                 </Checkbox>
@@ -68,7 +68,7 @@
                                             @click="handleColumnFixed(item, 'left')"
                                     />
                                 </Tooltip>
-                                <Divider type="vertical"/>
+                                <Divider type="vertical" />
                                 <Tooltip
                                         placement="bottomLeft"
                                         :mouseLeaveDelay="0.4"
@@ -94,12 +94,12 @@
                     </CheckboxGroup>
                 </ScrollContainer>
             </template>
-            <SettingOutlined/>
+            <SettingOutlined />
         </Popover>
     </Tooltip>
 </template>
 <script lang="ts">
-    import type {BasicColumn, ColumnChangeParam} from '../../types/table';
+    import type { BasicColumn, ColumnChangeParam } from '../../types/table';
     import {
         defineComponent,
         ref,
@@ -110,17 +110,17 @@
         unref,
         computed,
     } from 'vue';
-    import {Tooltip, Popover, Checkbox, Divider} from 'ant-design-vue';
-    import {SettingOutlined, DragOutlined} from '@ant-design/icons-vue';
-    import {Icon} from '/@/components/Icon';
-    import {ScrollContainer} from '/@/components/Container';
-    import {useI18n} from '/@/hooks/web/useI18n';
-    import {useTableContext} from '../../hooks/useTableContext';
-    import {useDesign} from '/@/hooks/web/useDesign';
-    import {useSortable} from '/@/hooks/web/useSortable';
-    import {isFunction, isNullAndUnDef} from '/@/utils/is';
-    import {getPopupContainer as getParentContainer} from '/@/utils';
-    import {omit} from 'lodash-es';
+    import { Tooltip, Popover, Checkbox, Divider } from 'ant-design-vue';
+    import { SettingOutlined, DragOutlined } from '@ant-design/icons-vue';
+    import { Icon } from '/@/components/Icon';
+    import { ScrollContainer } from '/@/components/Container';
+    import { useI18n } from '/@/hooks/web/useI18n';
+    import { useTableContext } from '../../hooks/useTableContext';
+    import { useDesign } from '/@/hooks/web/useDesign';
+    import { useSortable } from '/@/hooks/web/useSortable';
+    import { isFunction, isNullAndUnDef } from '/@/utils/is';
+    import { getPopupContainer as getParentContainer } from '/@/utils';
+    import { omit } from 'lodash-es';
 
     interface State {
         checkAll: boolean;
@@ -149,8 +149,8 @@
         },
         emits: ['columns-change'],
 
-        setup(_, {emit, attrs}) {
-            const {t} = useI18n();
+        setup(_, { emit, attrs }) {
+            const { t } = useI18n();
             const table = useTableContext();
 
             const defaultRowSelection = omit(table.getRowSelection(), 'selectedRowKeys');
@@ -172,7 +172,7 @@
             const checkIndex = ref(false);
             const checkSelect = ref(false);
 
-            const {prefixCls} = useDesign('basic-column-setting');
+            const { prefixCls } = useDesign('basic-column-setting');
 
             const getValues = computed(() => {
                 return unref(table?.getBindValues) || {};
@@ -193,7 +193,7 @@
 
             function getColumns() {
                 const ret: Options[] = [];
-                table.getColumns({ignoreIndex: true, ignoreAction: true}).forEach((item) => {
+                table.getColumns({ ignoreIndex: true, ignoreAction: true }).forEach((item) => {
                     ret.push({
                         label: (item.title as string) || (item.customTitle as string),
                         value: (item.dataIndex || item.title) as string,
@@ -207,7 +207,7 @@
                 const columns = getColumns();
 
                 const checkList = table
-                    .getColumns({ignoreAction: true})
+                    .getColumns({ ignoreAction: true })
                     .map((item) => {
                         if (item.defaultHidden) {
                             return '';
@@ -282,13 +282,13 @@
                 nextTick(() => {
                     const columnListEl = unref(columnListRef);
                     if (!columnListEl) return;
-                    const el = columnListEl.$el;
+                    const el = columnListEl.$el as any;
                     if (!el) return;
                     // Drag and drop sort
-                    const {initSortable} = useSortable(el, {
+                    const { initSortable } = useSortable(el, {
                         handle: '.table-coulmn-drag-icon ',
                         onEnd: (evt) => {
-                            const {oldIndex, newIndex} = evt;
+                            const { oldIndex, newIndex } = evt;
                             if (isNullAndUnDef(oldIndex) || isNullAndUnDef(newIndex) || oldIndex === newIndex) {
                                 return;
                             }
@@ -341,7 +341,7 @@
                 if (isFixed && !item.width) {
                     item.width = 100;
                 }
-                table.setCacheColumnsByField?.(item.dataIndex, {fixed: isFixed});
+                table.setCacheColumnsByField?.(item.dataIndex, { fixed: isFixed });
                 setColumns(columns);
             }
 
@@ -353,7 +353,7 @@
                             (c: BasicColumn | string) =>
                                 c === col.value || (typeof c !== 'string' && c.dataIndex === col.value)
                         ) !== -1;
-                    return {dataIndex: col.value, fixed: col.fixed, visible};
+                    return { dataIndex: col.value, fixed: col.fixed, visible };
                 });
 
                 emit('columns-change', data);

@@ -112,7 +112,7 @@ export const usePermissionStore = defineStore({
         return roleList.some((role) => roles.includes(role));
       };
 
-      const routeRmoveIgnoreFilter = (route: AppRouteRecordRaw) => {
+      const routeRemoveIgnoreFilter = (route: AppRouteRecordRaw) => {
         const { meta } = route;
         const { ignoreRoute } = meta || {};
         return !ignoreRoute;
@@ -152,7 +152,7 @@ export const usePermissionStore = defineStore({
         case PermissionModeEnum.ROLE:
           routes = filter(asyncRoutes, routeFilter);
           routes = routes.filter(routeFilter);
-          // Convert multi-level routing to level 2 routing
+          //  将多级路由转换为二级
           routes = flatMultiLevelRoutes(routes);
           break;
 
@@ -160,18 +160,18 @@ export const usePermissionStore = defineStore({
           routes = filter(asyncRoutes, routeFilter);
           routes = routes.filter(routeFilter);
           const menuList = transformRouteToMenu(routes, true);
-          routes = filter(routes, routeRmoveIgnoreFilter);
-          routes = routes.filter(routeRmoveIgnoreFilter);
+          routes = filter(routes, routeRemoveIgnoreFilter);
+          routes = routes.filter(routeRemoveIgnoreFilter);
           menuList.sort((a, b) => {
             return (a.meta?.orderNo || 0) - (b.meta?.orderNo || 0);
           });
 
           this.setFrontMenuList(menuList);
-          // Convert multi-level routing to level 2 routing
+          // 将多级路由转换为二级
           routes = flatMultiLevelRoutes(routes);
           break;
 
-        //  If you are sure that you do not need to do background dynamic permissions, please comment the entire judgment below
+        // 后台菜单构建
         case PermissionModeEnum.BACK:
           const { createMessage } = useMessage();
 
@@ -180,8 +180,8 @@ export const usePermissionStore = defineStore({
             duration: 1,
           });
 
-          // !Simulate to obtain permission codes from the background,
-          // this function may only need to be executed once, and the actual project can be put at the right time by itself
+          // 从后台获取权限码，
+          // 这个函数可能只需要执行一次，并且实际的项目可以在正确的时间被放置
           let routeList: AppRouteRecordRaw[] = [];
           try {
             this.changePermissionCode();
@@ -190,16 +190,16 @@ export const usePermissionStore = defineStore({
             console.error(error);
           }
 
-          // Dynamically introduce components
+          // 动态引入组件
           routeList = transformObjToRoute(routeList);
 
-          //  Background routing to menu structure
+          // 构建后台路由菜单
           const backMenuList = transformRouteToMenu(routeList);
           this.setBackMenuList(backMenuList);
 
-          // remove meta.ignoreRoute item
-          routeList = filter(routeList, routeRmoveIgnoreFilter);
-          routeList = routeList.filter(routeRmoveIgnoreFilter);
+          // 删除meta.ignoreRoute项
+          routeList = filter(routeList, routeRemoveIgnoreFilter);
+          routeList = routeList.filter(routeRemoveIgnoreFilter);
 
           routeList = flatMultiLevelRoutes(routeList);
           routes = [PAGE_NOT_FOUND_ROUTE, ...routeList];
@@ -213,7 +213,7 @@ export const usePermissionStore = defineStore({
   },
 });
 
-// Need to be used outside the setup
+// 需要在设置之外使用
 export function usePermissionStoreWithOut() {
   return usePermissionStore(store);
 }
