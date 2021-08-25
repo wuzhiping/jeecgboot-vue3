@@ -1,6 +1,6 @@
 ## Install and use
 
-- Get the project code
+- Get the project code 8.4
 
 ```bash
 git clone https://github.com/jeecg/vue3-jeecg-admin.git

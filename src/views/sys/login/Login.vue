@@ -61,53 +61,32 @@
         </div>
     </div>
 </template>
-<script lang="ts">
-    import {defineComponent, computed} from 'vue';
-
-    import {AppLogo} from '/@/components/Application';
-    import {AppLocalePicker, AppDarkModeToggle} from '/@/components/Application';
+<script lang="ts" setup>
+    import { computed } from 'vue';
+    import { AppLogo } from '/@/components/Application';
+    import { AppLocalePicker, AppDarkModeToggle } from '/@/components/Application';
     import LoginForm from './LoginForm.vue';
     import ForgetPasswordForm from './ForgetPasswordForm.vue';
     import RegisterForm from './RegisterForm.vue';
     import MobileForm from './MobileForm.vue';
     import QrCodeForm from './QrCodeForm.vue';
+    import { useGlobSetting } from '/@/hooks/setting';
+    import { useI18n } from '/@/hooks/web/useI18n';
+    import { useDesign } from '/@/hooks/web/useDesign';
+    import { useLocaleStore } from '/@/store/modules/locale';
 
-    import {useGlobSetting} from '/@/hooks/setting';
-    import {useI18n} from '/@/hooks/web/useI18n';
-    import {useDesign} from '/@/hooks/web/useDesign';
-    import {useLocaleStore} from '/@/store/modules/locale';
-
-    export default defineComponent({
-        name: 'Login',
-        components: {
-            AppLogo,
-            LoginForm,
-            ForgetPasswordForm,
-            RegisterForm,
-            MobileForm,
-            QrCodeForm,
-            AppLocalePicker,
-            AppDarkModeToggle,
-        },
-        props: {
-            sessionTimeout: {
-                type: Boolean,
-            },
-        },
-        setup() {
-            const globSetting = useGlobSetting();
-            const {prefixCls} = useDesign('login');
-            const {t} = useI18n();
-            const localeStore = useLocaleStore();
-
-            return {
-                t,
-                prefixCls,
-                title: computed(() => globSetting?.title ?? ''),
-                showLocale: localeStore.getShowPicker,
-            };
+    defineProps({
+        sessionTimeout: {
+            type: Boolean,
         },
     });
+
+    const globSetting = useGlobSetting();
+    const { prefixCls } = useDesign('login');
+    const { t } = useI18n();
+    const localeStore = useLocaleStore();
+    const showLocale = localeStore.getShowPicker;
+    const title = computed(() => globSetting?.title ?? '');
 </script>
 <style lang="less">
     @prefix-cls: ~'@{namespace}-login';

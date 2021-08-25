@@ -2,10 +2,10 @@
   <Drawer :class="prefixCls" @close="onClose" v-bind="getBindValues">
     <template #title v-if="!$slots.title">
       <DrawerHeader
-        :title="getMergeProps.title"
-        :isDetail="isDetail"
-        :showDetailBack="showDetailBack"
-        @close="onClose"
+              :title="getMergeProps.title"
+              :isDetail="isDetail"
+              :showDetailBack="showDetailBack"
+              @close="onClose"
       >
         <template #titleToolbar>
           <slot name="titleToolbar"></slot>
@@ -17,15 +17,15 @@
     </template>
 
     <ScrollContainer
-      :style="getScrollContentStyle"
-      v-loading="getLoading"
-      :loading-tip="loadingText || t('common.loadingText')"
+            :style="getScrollContentStyle"
+            v-loading="getLoading"
+            :loading-tip="loadingText || t('common.loadingText')"
     >
       <slot></slot>
     </ScrollContainer>
     <DrawerFooter v-bind="getProps" @close="onClose" @ok="handleOk" :height="getFooterHeight">
       <template #[item]="data" v-for="item in Object.keys($slots)">
-        <slot :name="item" v-bind="data"></slot>
+        <slot :name="item" v-bind="data || {}"></slot>
       </template>
     </DrawerFooter>
   </Drawer>
@@ -116,8 +116,8 @@
         const { footerHeight, showFooter } = unref(getProps);
         if (showFooter && footerHeight) {
           return isNumber(footerHeight)
-            ? `${footerHeight}px`
-            : `${footerHeight.replace('px', '')}px`;
+                  ? `${footerHeight}px`
+                  : `${footerHeight.replace('px', '')}px`;
         }
         return `0px`;
       });
@@ -135,21 +135,21 @@
       });
 
       watch(
-        () => props.visible,
-        (newVal, oldVal) => {
-          if (newVal !== oldVal) visibleRef.value = newVal;
-        },
-        { deep: true }
+              () => props.visible,
+              (newVal, oldVal) => {
+                if (newVal !== oldVal) visibleRef.value = newVal;
+              },
+              { deep: true }
       );
 
       watch(
-        () => visibleRef.value,
-        (visible) => {
-          nextTick(() => {
-            emit('visible-change', visible);
-            instance && drawerInstance.emitVisible?.(visible, instance.uid);
-          });
-        }
+              () => visibleRef.value,
+              (visible) => {
+                nextTick(() => {
+                  emit('visible-change', visible);
+                  instance && drawerInstance.emitVisible?.(visible, instance.uid);
+                });
+              }
       );
 
       // Cancel event
@@ -181,9 +181,9 @@
         onClose,
         t,
         prefixCls,
-        getMergeProps,
+        getMergeProps: getMergeProps as any,
         getScrollContentStyle,
-        getProps,
+        getProps: getProps as any,
         getLoading,
         getBindValues,
         getFooterHeight,

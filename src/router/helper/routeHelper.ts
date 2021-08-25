@@ -87,7 +87,7 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
 }
 
 /**
- * Convert multi-level routing to level 2 routing
+ *  将多级路由转换为二级
  */
 export function flatMultiLevelRoutes(routeModules: AppRouteModule[]) {
   const modules: AppRouteModule[] = cloneDeep(routeModules);
@@ -101,7 +101,7 @@ export function flatMultiLevelRoutes(routeModules: AppRouteModule[]) {
   return modules;
 }
 
-// Routing level upgrade
+//提升路由级别
 function promoteRouteLevel(routeModule: AppRouteModule) {
   // Use vue-router to splice menus
   let router: Router | null = createRouter({

@@ -1,14 +1,14 @@
 <template>
   <div :class="getWrapClass">
     <Tabs
-      type="editable-card"
-      size="small"
-      :animated="false"
-      :hideAdd="true"
-      :tabBarGutter="3"
-      :activeKey="activeKeyRef"
-      @change="handleChange"
-      @edit="handleEdit"
+            type="editable-card"
+            size="small"
+            :animated="false"
+            :hideAdd="true"
+            :tabBarGutter="3"
+            :activeKey="activeKeyRef"
+            @change="handleChange"
+            @edit="handleEdit"
     >
       <template v-for="item in getTabsState" :key="item.query ? item.fullPath : item.path">
         <TabPane :closable="!(item && item.meta && item.meta.affix)">
@@ -27,7 +27,7 @@
   </div>
 </template>
 <script lang="ts">
-  import type { RouteLocationNormalized } from 'vue-router';
+  import type { RouteLocationNormalized, RouteMeta } from 'vue-router';
 
   import { defineComponent, computed, unref, ref } from 'vue';
 
@@ -94,7 +94,7 @@
         }
 
         const { path, fullPath, meta = {} } = route;
-        const { currentActiveMenu, hideTab } = meta;
+        const { currentActiveMenu, hideTab } = meta as RouteMeta;
         const isHide = !hideTab ? null : currentActiveMenu;
         const p = isHide || fullPath || path;
         if (activeKeyRef.value !== p) {
@@ -103,8 +103,8 @@
 
         if (isHide) {
           const findParentRoute = router
-            .getRoutes()
-            .find((item) => item.path === currentActiveMenu);
+                  .getRoutes()
+                  .find((item) => item.path === currentActiveMenu);
 
           findParentRoute && tabStore.addTab(findParentRoute as unknown as RouteLocationNormalized);
         } else {

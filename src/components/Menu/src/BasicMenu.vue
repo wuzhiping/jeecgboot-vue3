@@ -1,16 +1,16 @@
 <template>
   <Menu
-    :selectedKeys="selectedKeys"
-    :defaultSelectedKeys="defaultSelectedKeys"
-    :mode="mode"
-    :openKeys="getOpenKeys"
-    :inlineIndent="inlineIndent"
-    :theme="theme"
-    @openChange="handleOpenChange"
-    :class="getMenuClass"
-    @click="handleMenuClick"
-    :subMenuOpenDelay="0.2"
-    v-bind="getInlineCollapseOptions"
+          :selectedKeys="selectedKeys"
+          :defaultSelectedKeys="defaultSelectedKeys"
+          :mode="mode"
+          :openKeys="getOpenKeys"
+          :inlineIndent="inlineIndent"
+          :theme="theme"
+          @openChange="handleOpenChange"
+          :class="getMenuClass"
+          @click="handleMenuClick"
+          :subMenuOpenDelay="0.2"
+          v-bind="getInlineCollapseOptions"
   >
     <template v-for="item in items" :key="item.path">
       <BasicSubMenuItem :item="item" :theme="theme" :isHorizontal="isHorizontal" />
@@ -56,23 +56,23 @@
       const { prefixCls } = useDesign('basic-menu');
       const { items, mode, accordion } = toRefs(props);
 
-      const { getCollapsed, getIsHorizontal, getTopMenuAlign, getSplit } = useMenuSetting();
+      const { getCollapsed, getTopMenuAlign, getSplit } = useMenuSetting();
 
       const { currentRoute } = useRouter();
 
       const { handleOpenChange, setOpenKeys, getOpenKeys } = useOpenKeys(
-        menuState,
-        items,
-        mode,
-        accordion
+              menuState,
+              items,
+              mode as any,
+              accordion
       );
 
       const getIsTopMenu = computed(() => {
         const { type, mode } = props;
 
         return (
-          (type === MenuTypeEnum.TOP_MENU && mode === MenuModeEnum.HORIZONTAL) ||
-          (props.isHorizontal && unref(getSplit))
+                (type === MenuTypeEnum.TOP_MENU && mode === MenuModeEnum.HORIZONTAL) ||
+                (props.isHorizontal && unref(getSplit))
         );
       });
 
@@ -110,12 +110,12 @@
       });
 
       !props.mixSider &&
-        watch(
-          () => props.items,
-          () => {
-            handleMenuChange();
-          }
-        );
+      watch(
+              () => props.items,
+              () => {
+                handleMenuChange();
+              }
+      );
 
       async function handleMenuClick({ key }: { key: string; keyPath: string[] }) {
         const { beforeClickFn } = props;
@@ -150,8 +150,6 @@
       }
 
       return {
-        prefixCls,
-        getIsHorizontal,
         handleMenuClick,
         getInlineCollapseOptions,
         getMenuClass,

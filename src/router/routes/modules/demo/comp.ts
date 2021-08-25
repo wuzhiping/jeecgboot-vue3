@@ -16,6 +16,14 @@ const comp: AppRouteModule = {
 
   children: [
     {
+      path: 'demo',
+      name: 'DemoComp',
+      component: () => import('/@/views/demo/index.vue'),
+      meta: {
+        title: t('routes.demo.comp.demo'),
+      },
+    },
+    {
       path: 'basic',
       name: 'BasicDemo',
       component: () => import('/@/views/demo/comp/button/index.vue'),
@@ -23,7 +31,6 @@ const comp: AppRouteModule = {
         title: t('routes.demo.comp.basic'),
       },
     },
-
     {
       path: 'form',
       name: 'FormDemo',

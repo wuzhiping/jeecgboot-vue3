@@ -2,19 +2,19 @@ import { Ref, watchEffect, ref } from 'vue';
 
 interface IntersectionObserverProps {
   target: Ref<Element | null | undefined>;
-  root?: Ref<Element | null | undefined>;
+  root?: Ref<any>;
   onIntersect: IntersectionObserverCallback;
   rootMargin?: string;
   threshold?: number;
 }
 
 export function useIntersectionObserver({
-  target,
-  root,
-  onIntersect,
-  rootMargin = '0px',
-  threshold = 0.1,
-}: IntersectionObserverProps) {
+                                          target,
+                                          root,
+                                          onIntersect,
+                                          rootMargin = '0px',
+                                          threshold = 0.1,
+                                        }: IntersectionObserverProps) {
   let cleanup = () => {};
   const observer: Ref<Nullable<IntersectionObserver>> = ref(null);
   const stopEffect = watchEffect(() => {

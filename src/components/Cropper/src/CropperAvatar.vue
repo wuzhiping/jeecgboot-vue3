@@ -3,28 +3,28 @@
     <div :class="`${prefixCls}-image-wrapper`" :style="getImageWrapperStyle" @click="openModal">
       <div :class="`${prefixCls}-image-mask`" :style="getImageWrapperStyle">
         <Icon
-          icon="ant-design:cloud-upload-outlined"
-          :size="getIconWidth"
-          :style="getImageWrapperStyle"
-          color="#d6d6d6"
+                icon="ant-design:cloud-upload-outlined"
+                :size="getIconWidth"
+                :style="getImageWrapperStyle"
+                color="#d6d6d6"
         />
       </div>
       <img :src="sourceValue" v-if="sourceValue" alt="avatar" />
     </div>
     <a-button
-      :class="`${prefixCls}-upload-btn`"
-      @click="openModal"
-      v-if="showBtn"
-      v-bind="btnProps"
+            :class="`${prefixCls}-upload-btn`"
+            @click="openModal"
+            v-if="showBtn"
+            v-bind="btnProps"
     >
       {{ btnText ? btnText : t('component.cropper.selectImage') }}
     </a-button>
 
     <CopperModal
-      @register="register"
-      @uploadSuccess="handleUploadSuccess"
-      :uploadApi="uploadApi"
-      :src="sourceValue"
+            @register="register"
+            @uploadSuccess="handleUploadSuccess"
+            :uploadApi="uploadApi"
+            :src="sourceValue"
     />
   </div>
 </template>
@@ -77,7 +77,7 @@
       const getStyle = computed((): CSSProperties => ({ width: unref(getWidth) }));
 
       const getImageWrapperStyle = computed(
-        (): CSSProperties => ({ width: unref(getWidth), height: unref(getWidth) })
+              (): CSSProperties => ({ width: unref(getWidth), height: unref(getWidth) })
       );
 
       watchEffect(() => {
@@ -85,10 +85,10 @@
       });
 
       watch(
-        () => sourceValue.value,
-        (v: string) => {
-          emit('update:value', v);
-        }
+              () => sourceValue.value,
+              (v: string) => {
+                emit('update:value', v);
+              }
       );
 
       function handleUploadSuccess({ source }) {
@@ -103,7 +103,7 @@
         t,
         prefixCls,
         register,
-        openModal,
+        openModal: openModal as any,
         getIconWidth,
         sourceValue,
         getClass,

@@ -1,7 +1,6 @@
 <script lang="tsx">
-    import {defineComponent, ref, unref, computed, reactive, watchEffect} from 'vue';
-    import {Props} from './typing';
-    import {CloseOutlined, LeftOutlined, RightOutlined} from '@ant-design/icons-vue';
+    import { defineComponent, ref, unref, computed, reactive, watchEffect } from 'vue';
+    import { CloseOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons-vue';
     import resumeSvg from '/@/assets/svg/preview/resume.svg';
     import rotateSvg from '/@/assets/svg/preview/p-rotate.svg';
     import scaleSvg from '/@/assets/svg/preview/scale.svg';
@@ -13,7 +12,6 @@
         DONE,
         FAIL,
     }
-
     interface ImgState {
         currentUrl: string;
         imgScale: number;
@@ -26,7 +24,6 @@
         moveY: number;
         show: boolean;
     }
-
     const props = {
         show: {
             type: Boolean as PropType<boolean>,
@@ -59,14 +56,13 @@
         name: 'ImagePreview',
         props,
         emits: ['img-load', 'img-error'],
-        setup(props: Props, {expose, emit}) {
+        setup(props, { expose, emit }) {
             interface stateInfo {
                 scale: number;
                 rotate: number;
                 top: number;
                 left: number;
             }
-
             const stateMap = new Map<string, stateInfo>();
             const imgState = reactive<ImgState>({
                 currentUrl: '',
@@ -87,7 +83,7 @@
             // 初始化
             function init() {
                 initMouseWheel();
-                const {index, imageList} = props;
+                const { index, imageList } = props;
 
                 if (!imageList || !imageList.length) {
                     throw new Error('imageList is undefined');
@@ -120,8 +116,9 @@
             }
 
             const getScaleStep = computed(() => {
-                if (props.scaleStep > 0 && props.scaleStep < 100) {
-                    return props.scaleStep / 100;
+                const scaleStep = props?.scaleStep ?? 0;
+                if (scaleStep ?? (0 > 0 && scaleStep < 100)) {
+                    return scaleStep / 100;
                 } else {
                     return imgState.imgScale / 10;
                 }
@@ -142,7 +139,6 @@
                     scaleFunc(-getScaleStep.value);
                 }
             }
-
             // 缩放函数
             function scaleFunc(num: number) {
                 if (imgState.imgScale <= 0.2 && num < 0) return;
@@ -168,7 +164,7 @@
                 img.src = url;
                 img.onload = (e: Event) => {
                     if (imgState.currentUrl !== url) {
-                        const ele: HTMLElement[] = e.composedPath();
+                        const ele: any[] = e.composedPath();
                         if (props.rememberState) {
                             // 保存当前图片的缩放信息
                             stateMap.set(imgState.currentUrl, {
@@ -248,12 +244,12 @@
                 setRotate: (rotate: number) => {
                     imgState.imgRotate = rotate;
                 },
-            } as PreviewActions);
+            });
 
             // 上一页下一页
             function handleChange(direction: 'left' | 'right') {
-                const {currentIndex} = imgState;
-                const {imageList} = props;
+                const { currentIndex } = imgState;
+                const { imageList } = props;
                 if (direction === 'left') {
                     imgState.currentIndex--;
                     if (currentIndex <= 0) {
@@ -292,7 +288,7 @@
 
             // 获取图片样式
             const getImageStyle = computed(() => {
-                const {imgScale, imgRotate, imgTop, imgLeft} = imgState;
+                const { imgScale, imgRotate, imgTop, imgLeft } = imgState;
                 return {
                     transform: `scale(${imgScale}) rotate(${imgRotate}deg)`,
                     marginTop: `${imgTop}px`,
@@ -302,7 +298,7 @@
             });
 
             const getIsMultipleImage = computed(() => {
-                const {imageList} = props;
+                const { imageList } = props;
                 return imageList.length > 1;
             });
 
@@ -328,7 +324,7 @@
             const renderClose = () => {
                 return (
                     <div class={`${prefixCls}__close`} onClick={handleClose}>
-                        <CloseOutlined class={`${prefixCls}__close-icon`}/>
+                        <CloseOutlined class={`${prefixCls}__close-icon`} />
                     </div>
                 );
             };
@@ -337,8 +333,8 @@
                 if (!unref(getIsMultipleImage)) {
                     return null;
                 }
-                const {currentIndex} = imgState;
-                const {imageList} = props;
+                const { currentIndex } = imgState;
+                const { imageList } = props;
                 return (
                     <div class={`${prefixCls}__index`}>
                         {currentIndex + 1} / {imageList.length}
@@ -353,22 +349,22 @@
                             class={`${prefixCls}__controller-item`}
                             onClick={() => scaleFunc(-getScaleStep.value)}
                         >
-                            <img src={unScaleSvg}/>
+                            <img src={unScaleSvg} />
                         </div>
                         <div
                             class={`${prefixCls}__controller-item`}
                             onClick={() => scaleFunc(getScaleStep.value)}
                         >
-                            <img src={scaleSvg}/>
+                            <img src={scaleSvg} />
                         </div>
                         <div class={`${prefixCls}__controller-item`} onClick={resume}>
-                            <img src={resumeSvg}/>
+                            <img src={resumeSvg} />
                         </div>
                         <div class={`${prefixCls}__controller-item`} onClick={() => rotateFunc(-90)}>
-                            <img src={unRotateSvg}/>
+                            <img src={unRotateSvg} />
                         </div>
                         <div class={`${prefixCls}__controller-item`} onClick={() => rotateFunc(90)}>
-                            <img src={rotateSvg}/>
+                            <img src={rotateSvg} />
                         </div>
                     </div>
                 );
@@ -380,7 +376,7 @@
                 }
                 return (
                     <div class={[`${prefixCls}__arrow`, direction]} onClick={() => handleChange(direction)}>
-                        {direction === 'left' ? <LeftOutlined/> : <RightOutlined/>}
+                        {direction === 'left' ? <LeftOutlined /> : <RightOutlined />}
                     </div>
                 );
             };

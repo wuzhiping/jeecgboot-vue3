@@ -19,13 +19,13 @@ interface UseAdvancedContext {
 }
 
 export default function ({
-  advanceState,
-  emit,
-  getProps,
-  getSchema,
-  formModel,
-  defaultValueRef,
-}: UseAdvancedContext) {
+                           advanceState,
+                           emit,
+                           getProps,
+                           getSchema,
+                           formModel,
+                           defaultValueRef,
+                         }: UseAdvancedContext) {
   const { realWidthRef, screenEnum, screenRef } = useBreakpoint();
 
   const getEmptySpan = computed((): number => {
@@ -51,25 +51,25 @@ export default function ({
   const debounceUpdateAdvanced = useDebounceFn(updateAdvanced, 30);
 
   watch(
-    [() => unref(getSchema), () => advanceState.isAdvanced, () => unref(realWidthRef)],
-    () => {
-      const { showAdvancedButton } = unref(getProps);
-      if (showAdvancedButton) {
-        debounceUpdateAdvanced();
-      }
-    },
-    { immediate: true }
+      [() => unref(getSchema), () => advanceState.isAdvanced, () => unref(realWidthRef)],
+      () => {
+        const { showAdvancedButton } = unref(getProps);
+        if (showAdvancedButton) {
+          debounceUpdateAdvanced();
+        }
+      },
+      { immediate: true }
   );
 
   function getAdvanced(itemCol: Partial<ColEx>, itemColSum = 0, isLastAction = false) {
     const width = unref(realWidthRef);
 
     const mdWidth =
-      parseInt(itemCol.md as string) ||
-      parseInt(itemCol.xs as string) ||
-      parseInt(itemCol.sm as string) ||
-      (itemCol.span as number) ||
-      BASIC_COL_LEN;
+        parseInt(itemCol.md as string) ||
+        parseInt(itemCol.xs as string) ||
+        parseInt(itemCol.sm as string) ||
+        (itemCol.span as number) ||
+        BASIC_COL_LEN;
 
     const lgWidth = parseInt(itemCol.lg as string) || mdWidth;
     const xlWidth = parseInt(itemCol.xl as string) || lgWidth;
@@ -91,8 +91,8 @@ export default function ({
         advanceState.hideAdvanceBtn = true;
         advanceState.isAdvanced = true;
       } else if (
-        itemColSum > BASIC_COL_LEN * 2 &&
-        itemColSum <= BASIC_COL_LEN * (unref(getProps).autoAdvancedLine || 3)
+          itemColSum > BASIC_COL_LEN * 2 &&
+          itemColSum <= BASIC_COL_LEN * (unref(getProps).autoAdvancedLine || 3)
       ) {
         advanceState.hideAdvanceBtn = false;
 
@@ -103,7 +103,7 @@ export default function ({
       }
       return { isAdvanced: advanceState.isAdvanced, itemColSum };
     }
-    if (itemColSum > BASIC_COL_LEN) {
+    if (itemColSum > BASIC_COL_LEN * (unref(getProps).alwaysShowLines || 1)) {
       return { isAdvanced: advanceState.isAdvanced, itemColSum };
     } else {
       // The first line is always displayed
@@ -138,8 +138,8 @@ export default function ({
 
       if (isShow && (colProps || baseColProps)) {
         const { itemColSum: sum, isAdvanced } = getAdvanced(
-          { ...baseColProps, ...colProps },
-          itemColSum
+            { ...baseColProps, ...colProps },
+            itemColSum
         );
 
         itemColSum = sum || 0;

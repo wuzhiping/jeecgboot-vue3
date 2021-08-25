@@ -1,13 +1,13 @@
-import type {ComputedRef, Ref} from 'vue';
-import type {FormProps, FormSchema, FormActionType} from '../types/form';
-import type {NamePath} from 'ant-design-vue/lib/form/interface';
-import {unref, toRaw} from 'vue';
-import {isArray, isFunction, isObject, isString} from '/@/utils/is';
-import {deepMerge} from '/@/utils';
-import {dateItemType, handleInputNumberValue} from '../helper';
-import {dateUtil} from '/@/utils/dateUtil';
-import {cloneDeep, uniqBy} from 'lodash-es';
-import {error} from '/@/utils/log';
+import type { ComputedRef, Ref } from 'vue';
+import type { FormProps, FormSchema, FormActionType } from '../types/form';
+import type { NamePath } from 'ant-design-vue/lib/form/interface';
+import { unref, toRaw } from 'vue';
+import { isArray, isFunction, isObject, isString } from '/@/utils/is';
+import { deepMerge } from '/@/utils';
+import { dateItemType, handleInputNumberValue } from '../helper';
+import { dateUtil } from '/@/utils/dateUtil';
+import { cloneDeep, uniqBy } from 'lodash-es';
+import { error } from '/@/utils/log';
 
 interface UseFormActionContext {
     emit: EmitType;
@@ -19,7 +19,6 @@ interface UseFormActionContext {
     schemaRef: Ref<FormSchema[]>;
     handleFormValues: Fn;
 }
-
 export function useFormEvents({
                                   emit,
                                   getProps,
@@ -31,7 +30,7 @@ export function useFormEvents({
                                   handleFormValues,
                               }: UseFormActionContext) {
     async function resetFields(): Promise<void> {
-        const {resetFunc, submitOnReset} = unref(getProps);
+        const { resetFunc, submitOnReset } = unref(getProps);
         resetFunc && isFunction(resetFunc) && (await resetFunc());
 
         const formEl = unref(formElRef);
@@ -72,10 +71,10 @@ export function useFormEvents({
                         }
                         formModel[key] = arr;
                     } else {
-                        const {componentProps} = schema || {};
+                        const { componentProps } = schema || {};
                         let _props = componentProps as any;
                         if (typeof componentProps === 'function') {
-                            _props = _props({formModel});
+                            _props = _props({ formModel });
                         }
                         formModel[key] = value ? (_props?.valueFormat ? value : dateUtil(value)) : null;
                     }
@@ -85,10 +84,8 @@ export function useFormEvents({
                 validKeys.push(key);
             }
         });
-        validateFields(validKeys).catch((_) => {
-        });
+        validateFields(validKeys).catch((_) => {});
     }
-
     /**
      * @description: Delete based on field name
      */
@@ -152,7 +149,9 @@ export function useFormEvents({
             updateData = [...data];
         }
 
-        const hasField = updateData.every((item) => Reflect.has(item, 'field') && item.field);
+        const hasField = updateData.every(
+            (item) => item.component === 'Divider' || (Reflect.has(item, 'field') && item.field)
+        );
 
         if (!hasField) {
             error(
@@ -172,7 +171,9 @@ export function useFormEvents({
             updateData = [...data];
         }
 
-        const hasField = updateData.every((item) => Reflect.has(item, 'field') && item.field);
+        const hasField = updateData.every(
+            (item) => item.component === 'Divider' || (Reflect.has(item, 'field') && item.field)
+        );
 
         if (!hasField) {
             error(
@@ -230,7 +231,7 @@ export function useFormEvents({
      */
     async function handleSubmit(e?: Event): Promise<void> {
         e && e.preventDefault();
-        const {submitFunc} = unref(getProps);
+        const { submitFunc } = unref(getProps);
         if (submitFunc && isFunction(submitFunc)) {
             await submitFunc();
             return;

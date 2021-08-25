@@ -1,449 +1,460 @@
 <script lang="tsx">
-  import type { ReplaceFields, Keys, CheckKeys, TreeActionType, TreeItem } from './typing';
+    import type {ReplaceFields, Keys, CheckKeys, TreeActionType, TreeItem} from './typing';
 
-  import {
-    defineComponent,
-    reactive,
-    computed,
-    unref,
-    ref,
-    watchEffect,
-    toRaw,
-    watch,
-    CSSProperties,
-    onMounted,
-  } from 'vue';
-  import { Tree, Empty } from 'ant-design-vue';
-  import { TreeIcon } from './TreeIcon';
-  import TreeHeader from './TreeHeader.vue';
-  import { ScrollContainer } from '/@/components/Container';
+    import {
+        defineComponent,
+        reactive,
+        computed,
+        unref,
+        ref,
+        watchEffect,
+        toRaw,
+        watch,
+        CSSProperties,
+        onMounted,
+    } from 'vue';
+    import {Tree, Empty} from 'ant-design-vue';
+    import {TreeIcon} from './TreeIcon';
+    import TreeHeader from './TreeHeader.vue';
+    import {ScrollContainer} from '/@/components/Container';
 
-  import { omit, get, difference } from 'lodash-es';
-  import { isArray, isBoolean, isFunction } from '/@/utils/is';
-  import { extendSlots, getSlot } from '/@/utils/helper/tsxHelper';
-  import { filter } from '/@/utils/helper/treeHelper';
+    import {omit, get, difference} from 'lodash-es';
+    import {isArray, isBoolean, isFunction} from '/@/utils/is';
+    import {extendSlots, getSlot} from '/@/utils/helper/tsxHelper';
+    import {filter} from '/@/utils/helper/treeHelper';
 
-  import { useTree } from './useTree';
-  import { useContextMenu } from '/@/hooks/web/useContextMenu';
-  import { useDesign } from '/@/hooks/web/useDesign';
+    import {useTree} from './useTree';
+    import {useContextMenu} from '/@/hooks/web/useContextMenu';
+    import {useDesign} from '/@/hooks/web/useDesign';
 
-  import { basicProps } from './props';
-  import { CreateContextOptions } from '/@/components/ContextMenu';
+    import {basicProps} from './props';
+    import {CreateContextOptions} from '/@/components/ContextMenu';
 
-  import { CheckEvent } from './typing';
+    import {CheckEvent} from './typing';
 
-  interface State {
-    expandedKeys: Keys;
-    selectedKeys: Keys;
-    checkedKeys: CheckKeys;
-    checkStrictly: boolean;
-  }
-  export default defineComponent({
-    name: 'BasicTree',
-    inheritAttrs: false,
-    props: basicProps,
-    emits: ['update:expandedKeys', 'update:selectedKeys', 'update:value', 'change', 'check'],
-    setup(props, { attrs, slots, emit, expose }) {
-      const state = reactive<State>({
-        checkStrictly: props.checkStrictly,
-        expandedKeys: props.expandedKeys || [],
-        selectedKeys: props.selectedKeys || [],
-        checkedKeys: props.checkedKeys || [],
-      });
+    interface State {
+        expandedKeys: Keys;
+        selectedKeys: Keys;
+        checkedKeys: CheckKeys;
+        checkStrictly: boolean;
+    }
 
-      const searchState = reactive({
-        startSearch: false,
-        searchData: [] as TreeItem[],
-      });
+    export default defineComponent({
+        name: 'BasicTree',
+        inheritAttrs: false,
+        props: basicProps,
+        emits: [
+            'update:expandedKeys',
+            'update:selectedKeys',
+            'update:value',
+            'change',
+            'check',
+            'update:searchValue',
+        ],
+        setup(props, {attrs, slots, emit, expose}) {
+            const state = reactive<State>({
+                checkStrictly: props.checkStrictly,
+                expandedKeys: props.expandedKeys || [],
+                selectedKeys: props.selectedKeys || [],
+                checkedKeys: props.checkedKeys || [],
+            });
 
-      const treeDataRef = ref<TreeItem[]>([]);
+            const searchState = reactive({
+                startSearch: false,
+                searchData: [] as TreeItem[],
+            });
 
-      const [createContextMenu] = useContextMenu();
-      const { prefixCls } = useDesign('basic-tree');
+            const treeDataRef = ref<TreeItem[]>([]);
 
-      const getReplaceFields = computed((): Required<ReplaceFields> => {
-        const { replaceFields } = props;
-        return {
-          children: 'children',
-          title: 'title',
-          key: 'key',
-          ...replaceFields,
-        };
-      });
+            const [createContextMenu] = useContextMenu();
+            const {prefixCls} = useDesign('basic-tree');
 
-      const getBindValues = computed(() => {
-        let propsData = {
-          blockNode: true,
-          ...attrs,
-          ...props,
-          expandedKeys: state.expandedKeys,
-          selectedKeys: state.selectedKeys,
-          checkedKeys: state.checkedKeys,
-          checkStrictly: state.checkStrictly,
-          replaceFields: unref(getReplaceFields),
-          'onUpdate:expandedKeys': (v: Keys) => {
-            state.expandedKeys = v;
-            emit('update:expandedKeys', v);
-          },
-          'onUpdate:selectedKeys': (v: Keys) => {
-            state.selectedKeys = v;
-            emit('update:selectedKeys', v);
-          },
-          onCheck: (v: CheckKeys, e: CheckEvent) => {
-            let currentValue = toRaw(state.checkedKeys) as Keys;
-            if (isArray(currentValue) && searchState.startSearch) {
-              const { key } = unref(getReplaceFields);
-              currentValue = difference(currentValue, getChildrenKeys(e.node.$attrs.node[key]));
-              if (e.checked) {
-                currentValue.push(e.node.$attrs.node[key]);
-              }
-              state.checkedKeys = currentValue;
-            } else {
-              state.checkedKeys = v;
+            const getReplaceFields = computed((): Required<ReplaceFields> => {
+                const {replaceFields} = props;
+                return {
+                    children: 'children',
+                    title: 'title',
+                    key: 'key',
+                    ...replaceFields,
+                };
+            });
+
+            const getBindValues = computed(() => {
+                let propsData = {
+                    blockNode: true,
+                    ...attrs,
+                    ...props,
+                    expandedKeys: state.expandedKeys,
+                    selectedKeys: state.selectedKeys,
+                    checkedKeys: state.checkedKeys,
+                    checkStrictly: state.checkStrictly,
+                    replaceFields: unref(getReplaceFields),
+                    'onUpdate:expandedKeys': (v: Keys) => {
+                        state.expandedKeys = v;
+                        emit('update:expandedKeys', v);
+                    },
+                    'onUpdate:selectedKeys': (v: Keys) => {
+                        state.selectedKeys = v;
+                        emit('update:selectedKeys', v);
+                    },
+                    onCheck: (v: CheckKeys, e: CheckEvent) => {
+                        let currentValue = toRaw(state.checkedKeys) as Keys;
+                        if (isArray(currentValue) && searchState.startSearch) {
+                            const {key} = unref(getReplaceFields);
+                            currentValue = difference(currentValue, getChildrenKeys(e.node.$attrs.node[key]));
+                            if (e.checked) {
+                                currentValue.push(e.node.$attrs.node[key]);
+                            }
+                            state.checkedKeys = currentValue;
+                        } else {
+                            state.checkedKeys = v;
+                        }
+
+                        const rawVal = toRaw(state.checkedKeys);
+                        emit('update:value', rawVal);
+                        emit('check', rawVal, e);
+                    },
+                    onRightClick: handleRightClick,
+                };
+                return omit(propsData, 'treeData', 'class');
+            });
+
+            const getTreeData = computed((): TreeItem[] =>
+                searchState.startSearch ? searchState.searchData : unref(treeDataRef)
+            );
+
+            const getNotFound = computed((): boolean => {
+                return !getTreeData.value || getTreeData.value.length === 0;
+            });
+
+            const {
+                deleteNodeByKey,
+                insertNodeByKey,
+                insertNodesByKey,
+                filterByLevel,
+                updateNodeByKey,
+                getAllKeys,
+                getChildrenKeys,
+                getEnabledKeys,
+            } = useTree(treeDataRef, getReplaceFields);
+
+            function getIcon(params: Recordable, icon?: string) {
+                if (!icon) {
+                    if (props.renderIcon && isFunction(props.renderIcon)) {
+                        return props.renderIcon(params);
+                    }
+                }
+                return icon;
             }
 
-            const rawVal = toRaw(state.checkedKeys);
-            emit('update:value', rawVal);
-            emit('check', rawVal, e);
-          },
-          onRightClick: handleRightClick,
-        };
-        return omit(propsData, 'treeData', 'class');
-      });
+            async function handleRightClick({event, node}: Recordable) {
+                const {rightMenuList: menuList = [], beforeRightClick} = props;
+                let contextMenuOptions: CreateContextOptions = {event, items: []};
 
-      const getTreeData = computed((): TreeItem[] =>
-        searchState.startSearch ? searchState.searchData : unref(treeDataRef)
-      );
+                if (beforeRightClick && isFunction(beforeRightClick)) {
+                    let result = await beforeRightClick(node, event);
+                    if (Array.isArray(result)) {
+                        contextMenuOptions.items = result;
+                    } else {
+                        Object.assign(contextMenuOptions, result);
+                    }
+                } else {
+                    contextMenuOptions.items = menuList;
+                }
+                if (!contextMenuOptions.items?.length) return;
+                createContextMenu(contextMenuOptions);
+            }
 
-      const getNotFound = computed((): boolean => {
-        return !getTreeData.value || getTreeData.value.length === 0;
-      });
+            function setExpandedKeys(keys: Keys) {
+                state.expandedKeys = keys;
+            }
 
-      const {
-        deleteNodeByKey,
-        insertNodeByKey,
-        insertNodesByKey,
-        filterByLevel,
-        updateNodeByKey,
-        getAllKeys,
-        getChildrenKeys,
-      } = useTree(treeDataRef, getReplaceFields);
+            function getExpandedKeys() {
+                return state.expandedKeys;
+            }
 
-      function getIcon(params: Recordable, icon?: string) {
-        if (!icon) {
-          if (props.renderIcon && isFunction(props.renderIcon)) {
-            return props.renderIcon(params);
-          }
-        }
-        return icon;
-      }
+            function setSelectedKeys(keys: Keys) {
+                state.selectedKeys = keys;
+            }
 
-      async function handleRightClick({ event, node }: Recordable) {
-        const { rightMenuList: menuList = [], beforeRightClick } = props;
-        let contextMenuOptions: CreateContextOptions = { event, items: [] };
+            function getSelectedKeys() {
+                return state.selectedKeys;
+            }
 
-        if (beforeRightClick && isFunction(beforeRightClick)) {
-          let result = await beforeRightClick(node, event);
-          if (Array.isArray(result)) {
-            contextMenuOptions.items = result;
-          } else {
-            Object.assign(contextMenuOptions, result);
-          }
-        } else {
-          contextMenuOptions.items = menuList;
-        }
-        if (!contextMenuOptions.items?.length) return;
-        createContextMenu(contextMenuOptions);
-      }
+            function setCheckedKeys(keys: CheckKeys) {
+                state.checkedKeys = keys;
+            }
 
-      function setExpandedKeys(keys: Keys) {
-        state.expandedKeys = keys;
-      }
+            function getCheckedKeys() {
+                return state.checkedKeys;
+            }
 
-      function getExpandedKeys() {
-        return state.expandedKeys;
-      }
-      function setSelectedKeys(keys: Keys) {
-        state.selectedKeys = keys;
-      }
+            function checkAll(checkAll: boolean) {
+                state.checkedKeys = checkAll ? getEnabledKeys() : ([] as Keys);
+            }
 
-      function getSelectedKeys() {
-        return state.selectedKeys;
-      }
+            function expandAll(expandAll: boolean) {
+                state.expandedKeys = expandAll ? getAllKeys() : ([] as Keys);
+            }
 
-      function setCheckedKeys(keys: CheckKeys) {
-        state.checkedKeys = keys;
-      }
+            function onStrictlyChange(strictly: boolean) {
+                state.checkStrictly = strictly;
+            }
 
-      function getCheckedKeys() {
-        return state.checkedKeys;
-      }
+            function handleSearch(searchValue: string) {
+                if (!searchValue) {
+                    searchState.startSearch = false;
+                    return;
+                }
+                searchState.startSearch = true;
+                const {title: titleField} = unref(getReplaceFields);
 
-      function checkAll(checkAll: boolean) {
-        state.checkedKeys = checkAll ? getAllKeys() : ([] as Keys);
-      }
+                searchState.searchData = filter(
+                    unref(treeDataRef),
+                    (node) => {
+                        return node[titleField]?.includes(searchValue) ?? false;
+                    },
+                    unref(getReplaceFields)
+                );
+            }
 
-      function expandAll(expandAll: boolean) {
-        state.expandedKeys = expandAll ? getAllKeys() : ([] as Keys);
-      }
+            function handleClickNode(key: string, children: TreeItem[]) {
+                if (!props.clickRowToExpand || !children || children.length === 0) return;
+                if (!state.expandedKeys.includes(key)) {
+                    setExpandedKeys([...state.expandedKeys, key]);
+                } else {
+                    const keys = [...state.expandedKeys];
+                    const index = keys.findIndex((item) => item === key);
+                    if (index !== -1) {
+                        keys.splice(index, 1);
+                    }
+                    setExpandedKeys(keys);
+                }
+            }
 
-      function onStrictlyChange(strictly: boolean) {
-        state.checkStrictly = strictly;
-      }
+            watchEffect(() => {
+                treeDataRef.value = props.treeData as TreeItem[];
+            });
 
-      function handleSearch(searchValue: string) {
-        if (!searchValue) {
-          searchState.startSearch = false;
-          return;
-        }
-        searchState.startSearch = true;
-        const { title: titleField } = unref(getReplaceFields);
+            onMounted(() => {
+                const level = parseInt(props.defaultExpandLevel);
+                if (level > 0) {
+                    state.expandedKeys = filterByLevel(level);
+                } else if (props.defaultExpandAll) {
+                    expandAll(true);
+                }
+            });
 
-        searchState.searchData = filter(
-          unref(treeDataRef),
-          (node) => {
-            return node[titleField]?.includes(searchValue) ?? false;
-          },
-          unref(getReplaceFields)
-        );
-      }
+            watchEffect(() => {
+                state.expandedKeys = props.expandedKeys;
+            });
 
-      function handleClickNode(key: string, children: TreeItem[]) {
-        if (!props.clickRowToExpand || !children || children.length === 0) return;
-        if (!state.expandedKeys.includes(key)) {
-          setExpandedKeys([...state.expandedKeys, key]);
-        } else {
-          const keys = [...state.expandedKeys];
-          const index = keys.findIndex((item) => item === key);
-          if (index !== -1) {
-            keys.splice(index, 1);
-          }
-          setExpandedKeys(keys);
-        }
-      }
+            watchEffect(() => {
+                state.selectedKeys = props.selectedKeys;
+            });
 
-      watchEffect(() => {
-        treeDataRef.value = props.treeData as TreeItem[];
-      });
+            watchEffect(() => {
+                state.checkedKeys = props.checkedKeys;
+            });
 
-      onMounted(() => {
-        const level = parseInt(props.defaultExpandLevel);
-        if (level > 0) {
-          state.expandedKeys = filterByLevel(level);
-        } else if (props.defaultExpandAll) {
-          expandAll(true);
-        }
-      });
+            watch(
+                () => props.value,
+                () => {
+                    state.checkedKeys = toRaw(props.value || []);
+                }
+            );
 
-      watchEffect(() => {
-        state.expandedKeys = props.expandedKeys;
-      });
+            watch(
+                () => state.checkedKeys,
+                () => {
+                    const v = toRaw(state.checkedKeys);
+                    emit('update:value', v);
+                    emit('change', v);
+                }
+            );
 
-      watchEffect(() => {
-        state.selectedKeys = props.selectedKeys;
-      });
+            // watchEffect(() => {
+            //   console.log('======================');
+            //   console.log(props.value);
+            //   console.log('======================');
+            //   if (props.value) {
+            //     state.checkedKeys = props.value;
+            //   }
+            // });
 
-      watchEffect(() => {
-        state.checkedKeys = props.checkedKeys;
-      });
+            watchEffect(() => {
+                state.checkStrictly = props.checkStrictly;
+            });
 
-      watch(
-        () => props.value,
-        () => {
-          state.checkedKeys = toRaw(props.value || []);
-        }
-      );
+            const instance: TreeActionType = {
+                setExpandedKeys,
+                getExpandedKeys,
+                setSelectedKeys,
+                getSelectedKeys,
+                setCheckedKeys,
+                getCheckedKeys,
+                insertNodeByKey,
+                insertNodesByKey,
+                deleteNodeByKey,
+                updateNodeByKey,
+                checkAll,
+                expandAll,
+                filterByLevel: (level: number) => {
+                    state.expandedKeys = filterByLevel(level);
+                },
+            };
 
-      watch(
-        () => state.checkedKeys,
-        () => {
-          const v = toRaw(state.checkedKeys);
-          emit('update:value', v);
-          emit('change', v);
-        }
-      );
+            expose(instance);
 
-      // watchEffect(() => {
-      //   console.log('======================');
-      //   console.log(props.value);
-      //   console.log('======================');
-      //   if (props.value) {
-      //     state.checkedKeys = props.value;
-      //   }
-      // });
+            function renderAction(node: TreeItem) {
+                const {actionList} = props;
+                if (!actionList || actionList.length === 0) return;
+                return actionList.map((item, index) => {
+                    let nodeShow = true;
+                    if (isFunction(item.show)) {
+                        nodeShow = item.show?.(node);
+                    } else if (isBoolean(item.show)) {
+                        nodeShow = item.show;
+                    }
 
-      watchEffect(() => {
-        state.checkStrictly = props.checkStrictly;
-      });
+                    if (!nodeShow) return null;
 
-      const instance: TreeActionType = {
-        setExpandedKeys,
-        getExpandedKeys,
-        setSelectedKeys,
-        getSelectedKeys,
-        setCheckedKeys,
-        getCheckedKeys,
-        insertNodeByKey,
-        insertNodesByKey,
-        deleteNodeByKey,
-        updateNodeByKey,
-        checkAll,
-        expandAll,
-        filterByLevel: (level: number) => {
-          state.expandedKeys = filterByLevel(level);
-        },
-      };
-
-      expose(instance);
-
-      function renderAction(node: TreeItem) {
-        const { actionList } = props;
-        if (!actionList || actionList.length === 0) return;
-        return actionList.map((item, index) => {
-          let nodeShow = true;
-          if (isFunction(item.show)) {
-            nodeShow = item.show?.(node);
-          } else if (isBoolean(item.show)) {
-            nodeShow = item.show;
-          }
-
-          if (!nodeShow) return null;
-
-          return (
-            <span key={index} class={`${prefixCls}__action`}>
+                    return (
+                        <span key={index} class={`${prefixCls}__action`}>
               {item.render(node)}
             </span>
-          );
-        });
-      }
+                    );
+                });
+            }
 
-      function renderTreeNode({ data, level }: { data: TreeItem[] | undefined; level: number }) {
-        if (!data) {
-          return null;
-        }
-        return data.map((item) => {
-          const {
-            title: titleField,
-            key: keyField,
-            children: childrenField,
-          } = unref(getReplaceFields);
+            function renderTreeNode({data, level}: { data: TreeItem[] | undefined; level: number }) {
+                if (!data) {
+                    return null;
+                }
+                return data.map((item) => {
+                    const {
+                        title: titleField,
+                        key: keyField,
+                        children: childrenField,
+                    } = unref(getReplaceFields);
 
-          const propsData = omit(item, 'title');
-          const icon = getIcon({ ...item, level }, item.icon);
-          const children = get(item, childrenField) || [];
-          return (
-            <Tree.TreeNode {...propsData} node={toRaw(item)} key={get(item, keyField)}>
-              {{
-                title: () => (
-                  <span
-                    class={`${prefixCls}-title pl-2`}
-                    onClick={handleClickNode.bind(null, item[keyField], item[childrenField])}
-                  >
+                    const propsData = omit(item, 'title');
+                    const icon = getIcon({...item, level}, item.icon);
+                    const children = get(item, childrenField) || [];
+                    return (
+                        <Tree.TreeNode {...propsData} node={toRaw(item)} key={get(item, keyField)}>
+                            {{
+                                title: () => (
+                                    <span
+                                        class={`${prefixCls}-title pl-2`}
+                                        onClick={handleClickNode.bind(null, item[keyField], item[childrenField])}
+                                    >
                     {slots?.title ? (
-                      getSlot(slots, 'title', item)
+                        getSlot(slots, 'title', item)
                     ) : (
-                      <>
-                        {icon && <TreeIcon icon={icon} />}
-                        <span
-                          class={unref(getBindValues)?.blockNode ? `${prefixCls}__content` : ''}
-                        >
+                        <>
+                            {icon && <TreeIcon icon={icon}/>}
+                            <span
+                                class={unref(getBindValues)?.blockNode ? `${prefixCls}__content` : ''}
+                            >
                           {get(item, titleField)}
                         </span>
-                        <span class={`${prefixCls}__actions`}>
-                          {renderAction({ ...item, level })}
+                            <span class={`${prefixCls}__actions`}>
+                          {renderAction({...item, level})}
                         </span>
-                      </>
+                        </>
                     )}
                   </span>
-                ),
-                default: () => renderTreeNode({ data: children, level: level + 1 }),
-              }}
-            </Tree.TreeNode>
-          );
-        });
-      }
-      return () => {
-        const { title, helpMessage, toolbar, search, checkable } = props;
-        const showTitle = title || toolbar || search || slots.headerTitle;
-        const scrollStyle: CSSProperties = { height: 'calc(100% - 38px)' };
-        return (
-          <div class={[prefixCls, 'h-full', attrs.class]}>
-            {showTitle && (
-              <TreeHeader
-                checkable={checkable}
-                checkAll={checkAll}
-                expandAll={expandAll}
-                title={title}
-                search={search}
-                toolbar={toolbar}
-                helpMessage={helpMessage}
-                onStrictlyChange={onStrictlyChange}
-                onSearch={handleSearch}
-              >
-                {extendSlots(slots)}
-              </TreeHeader>
-            )}
-            <ScrollContainer style={scrollStyle} v-show={!unref(getNotFound)}>
-              <Tree {...unref(getBindValues)} showIcon={false}>
-                {{
-                  // switcherIcon: () => <DownOutlined />,
-                  default: () => renderTreeNode({ data: unref(getTreeData), level: 1 }),
-                  ...extendSlots(slots),
-                }}
-              </Tree>
-            </ScrollContainer>
+                                ),
+                                default: () => renderTreeNode({data: children, level: level + 1}),
+                            }}
+                        </Tree.TreeNode>
+                    );
+                });
+            }
 
-            <Empty v-show={unref(getNotFound)} image={Empty.PRESENTED_IMAGE_SIMPLE} class="!mt-4" />
-          </div>
-        );
-      };
-    },
-  });
+            return () => {
+                const {title, helpMessage, toolbar, search, checkable} = props;
+                const showTitle = title || toolbar || search || slots.headerTitle;
+                const scrollStyle: CSSProperties = {height: 'calc(100% - 38px)'};
+                return (
+                    <div class={[prefixCls, 'h-full', attrs.class]}>
+                        {showTitle && (
+                            <TreeHeader
+                                checkable={checkable}
+                                checkAll={checkAll}
+                                expandAll={expandAll}
+                                title={title}
+                                search={search}
+                                toolbar={toolbar}
+                                helpMessage={helpMessage}
+                                onStrictlyChange={onStrictlyChange}
+                                onSearch={handleSearch}
+                            >
+                                {extendSlots(slots)}
+                            </TreeHeader>
+                        )}
+                        <ScrollContainer style={scrollStyle} v-show={!unref(getNotFound)}>
+                            <Tree {...unref(getBindValues)} showIcon={false}>
+                                {{
+                                    // switcherIcon: () => <DownOutlined />,
+                                    default: () => renderTreeNode({data: unref(getTreeData), level: 1}),
+                                    ...extendSlots(slots),
+                                }}
+                            </Tree>
+                        </ScrollContainer>
+
+                        <Empty v-show={unref(getNotFound)} image={Empty.PRESENTED_IMAGE_SIMPLE} class="!mt-4"/>
+                    </div>
+                );
+            };
+        },
+    });
 </script>
 <style lang="less">
-  @prefix-cls: ~'@{namespace}-basic-tree';
+    @prefix-cls: ~'@{namespace}-basic-tree';
 
-  .@{prefix-cls} {
-    background-color: @component-background;
+    .@{prefix-cls} {
+        background-color: @component-background;
 
-    .ant-tree-node-content-wrapper {
-      position: relative;
+        .ant-tree-node-content-wrapper {
+            position: relative;
 
-      .ant-tree-title {
-        position: absolute;
-        left: 0;
-        width: 100%;
-      }
-    }
-
-    &-title {
-      position: relative;
-      display: flex;
-      align-items: center;
-      width: 100%;
-      padding-right: 10px;
-
-      &:hover {
-        .@{prefix-cls}__action {
-          visibility: visible;
+            .ant-tree-title {
+                position: absolute;
+                left: 0;
+                width: 100%;
+            }
         }
-      }
-    }
 
-    &__content {
-      overflow: hidden;
-    }
+        &-title {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding-right: 10px;
 
-    &__actions {
-      position: absolute;
-      top: 2px;
-      right: 3px;
-      display: flex;
-    }
+            &:hover {
+                .@{prefix-cls}__action {
+                    visibility: visible;
+                }
+            }
+        }
 
-    &__action {
-      margin-left: 4px;
-      visibility: hidden;
+        &__content {
+            overflow: hidden;
+        }
+
+        &__actions {
+            position: absolute;
+            top: 2px;
+            right: 3px;
+            display: flex;
+        }
+
+        &__action {
+            margin-left: 4px;
+            visibility: hidden;
+        }
     }
-  }
 </style>

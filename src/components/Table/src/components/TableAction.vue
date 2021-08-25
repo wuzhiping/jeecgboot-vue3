@@ -3,42 +3,55 @@
         <template v-for="(action, index) in getActions" :key="`${index}-${action.label}`">
             <Tooltip v-if="action.tooltip" v-bind="getTooltip(action.tooltip)">
                 <PopConfirmButton v-bind="action">
-                    <Icon :icon="action.icon" :class="{ 'mr-1': !!action.label }" v-if="action.icon"/>
+                    <Icon :icon="action.icon" :class="{ 'mr-1': !!action.label }" v-if="action.icon" />
                     <template v-if="action.label">{{ action.label }}</template>
                 </PopConfirmButton>
             </Tooltip>
             <PopConfirmButton v-else v-bind="action">
-                <Icon :icon="action.icon" :class="{ 'mr-1': !!action.label }" v-if="action.icon"/>
+                <Icon :icon="action.icon" :class="{ 'mr-1': !!action.label }" v-if="action.icon" />
                 <template v-if="action.label">{{ action.label }}</template>
             </PopConfirmButton>
-            <Divider type="vertical" class="action-divider" v-if="divider &&index < getActions.length - (dropDownActions ? 0 : 1) &&getDropdownList.length > 0"/>
+            <Divider
+                    type="vertical"
+                    class="action-divider"
+                    v-if="
+          divider &&
+          index < getActions.length - (dropDownActions ? 0 : 1) &&
+          getDropdownList.length > 0
+        "
+            />
         </template>
-        <Dropdown :trigger="['hover']" :dropMenuList="getDropdownList" popconfirm v-if="dropDownActions && getDropdownList.length > 0">
+        <Dropdown
+                :trigger="['hover']"
+                :dropMenuList="getDropdownList"
+                popconfirm
+                v-if="dropDownActions && getDropdownList.length > 0"
+        >
             <slot name="more"></slot>
             <a-button type="link" size="small" v-if="!$slots.more">
-                <MoreOutlined class="icon-more"/>
+                <MoreOutlined class="icon-more" />
             </a-button>
         </Dropdown>
     </div>
 </template>
 <script lang="ts">
-    import {defineComponent, PropType, computed, toRaw, unref} from 'vue';
-    import {MoreOutlined} from '@ant-design/icons-vue';
-    import {Divider, Tooltip, TooltipProps} from 'ant-design-vue';
+    import { defineComponent, PropType, computed, toRaw, unref } from 'vue';
+    import { MoreOutlined } from '@ant-design/icons-vue';
+    import { Divider, Tooltip, TooltipProps } from 'ant-design-vue';
     import Icon from '/@/components/Icon/index';
-    import {ActionItem, TableActionType} from '/@/components/Table';
-    import {PopConfirmButton} from '/@/components/Button';
-    import {Dropdown} from '/@/components/Dropdown';
-    import {useDesign} from '/@/hooks/web/useDesign';
-    import {useTableContext} from '../hooks/useTableContext';
-    import {usePermission} from '/@/hooks/web/usePermission';
-    import {isBoolean, isFunction, isString} from '/@/utils/is';
-    import {propTypes} from '/@/utils/propTypes';
-    import {ACTION_COLUMN_FLAG} from '../const';
+    import { ActionItem, TableActionType } from '/@/components/Table';
+    import { PopConfirmButton } from '/@/components/Button';
+    import { Dropdown } from '/@/components/Dropdown';
+    import { useDesign } from '/@/hooks/web/useDesign';
+    import { useTableContext } from '../hooks/useTableContext';
+    import { usePermission } from '/@/hooks/web/usePermission';
+    import { isBoolean, isFunction, isString } from '/@/utils/is';
+    import { propTypes } from '/@/utils/propTypes';
+    import { ACTION_COLUMN_FLAG } from '../const';
 
     export default defineComponent({
         name: 'TableAction',
-        components: {Icon, PopConfirmButton, Divider, Dropdown, MoreOutlined, Tooltip},
+        components: { Icon, PopConfirmButton, Divider, Dropdown, MoreOutlined, Tooltip },
         props: {
             actions: {
                 type: Array as PropType<ActionItem[]>,
@@ -53,14 +66,13 @@
             stopButtonPropagation: propTypes.bool.def(false),
         },
         setup(props) {
-            const {prefixCls} = useDesign('basic-table-action');
+            const { prefixCls } = useDesign('basic-table-action');
             let table: Partial<TableActionType> = {};
             if (!props.outside) {
                 table = useTableContext();
             }
 
-            const {hasPermission} = usePermission();
-
+            const { hasPermission } = usePermission();
             function isIfShow(action: ActionItem): boolean {
                 const ifShow = action.ifShow;
 
@@ -81,9 +93,9 @@
                         return hasPermission(action.auth) && isIfShow(action);
                     })
                     .map((action) => {
-                        const {popConfirm} = action;
+                        const { popConfirm } = action;
                         return {
-                            getPopupContainer: () => unref(table?.wrapRef.value) ?? document.body,
+                            getPopupContainer: () => unref((table as any)?.wrapRef.value) ?? document.body,
                             type: 'link',
                             size: 'small',
                             ...action,
@@ -95,13 +107,13 @@
                     });
             });
 
-            const getDropdownList = computed(() => {
+            const getDropdownList = computed((): any[] => {
                 return (toRaw(props.dropDownActions) || [])
                     .filter((action) => {
                         return hasPermission(action.auth) && isIfShow(action);
                     })
                     .map((action, index) => {
-                        const {label, popConfirm} = action;
+                        const { label, popConfirm } = action;
                         return {
                             ...action,
                             ...popConfirm,
@@ -121,12 +133,11 @@
 
             function getTooltip(data: string | TooltipProps): TooltipProps {
                 return {
-                    getPopupContainer: () => unref(table?.wrapRef.value) ?? document.body,
+                    getPopupContainer: () => unref((table as any)?.wrapRef.value) ?? document.body,
                     placement: 'bottom',
-                    ...(isString(data) ? {title: data} : data),
+                    ...(isString(data) ? { title: data } : data),
                 };
             }
-
 
             function onCellClick(e: MouseEvent) {
                 if (!props.stopButtonPropagation) return;
@@ -137,7 +148,7 @@
                 isInButton && e.stopPropagation();
             }
 
-            return {prefixCls, getActions, getDropdownList, getAlign, onCellClick, getTooltip};
+            return { prefixCls, getActions, getDropdownList, getAlign, onCellClick, getTooltip };
         },
     });
 </script>

@@ -2,9 +2,9 @@
   <PageWrapper title="二维码组件使用示例">
     <div class="flex flex-wrap">
       <CollapseContainer
-        title="基础示例"
-        :canExpan="true"
-        class="text-center mb-6 qrcode-demo-item"
+              title="基础示例"
+              :canExpan="true"
+              class="text-center mb-6 qrcode-demo-item"
       >
         <QrCode :value="qrCodeUrl" />
       </CollapseContainer>
@@ -15,8 +15,8 @@
 
       <CollapseContainer title="配置样式示例" class="text-center mb-6 qrcode-demo-item">
         <QrCode
-          :value="qrCodeUrl"
-          :options="{
+                :value="qrCodeUrl"
+                :options="{
             color: { dark: '#55D187' },
           }"
         />
@@ -28,9 +28,9 @@
 
       <CollapseContainer title="在线logo示例" class="text-center mb-6 qrcode-demo-item">
         <QrCode
-          :value="qrCodeUrl"
-          logo="https://vebn.oss-cn-beijing.aliyuncs.com/Jeecg/logo.png"
-          :options="{
+                :value="qrCodeUrl"
+                logo="https://vebn.oss-cn-beijing.aliyuncs.com/vben/logo.png"
+                :options="{
             color: { dark: '#55D187' },
           }"
         />
@@ -38,9 +38,9 @@
 
       <CollapseContainer title="logo配置示例" class="text-center mb-6 qrcode-demo-item">
         <QrCode
-          :value="qrCodeUrl"
-          :logo="{
-            src: 'https://vebn.oss-cn-beijing.aliyuncs.com/Jeecg/logo.png',
+                :value="qrCodeUrl"
+                :logo="{
+            src: 'https://vebn.oss-cn-beijing.aliyuncs.com/vben/logo.png',
             logoSize: 0.2,
             borderSize: 0.05,
             borderRadius: 50,
@@ -61,12 +61,12 @@
 
       <CollapseContainer title="扩展绘制示例" class="text-center qrcode-demo-item">
         <QrCode
-          :value="qrCodeUrl"
-          :width="200"
-          :options="{ margin: 5 }"
-          ref="qrDiyRef"
-          :logo="LogoImg"
-          @done="onQrcodeDone"
+                :value="qrCodeUrl"
+                :width="200"
+                :options="{ margin: 5 }"
+                ref="qrDiyRef"
+                :logo="LogoImg"
+                @done="onQrcodeDone"
         />
         <a-button class="mb-2" type="primary" @click="downloadDiy"> 下载 </a-button>
         <div class="msg"> 要进行扩展绘制则不能将tag设为img </div>
@@ -98,7 +98,7 @@
         qrEl.download('Qrcode');
       }
 
-      function onQrcodeDone({ ctx }) {
+      function onQrcodeDone({ ctx }: any) {
         if (ctx instanceof CanvasRenderingContext2D) {
           // 额外绘制
           ctx.fillStyle = 'black';

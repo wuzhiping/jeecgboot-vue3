@@ -1,21 +1,19 @@
-import type {Plugin} from 'vite';
-
+import type { Plugin } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import legacy from '@vitejs/plugin-legacy';
-
 import purgeIcons from 'vite-plugin-purge-icons';
-
-import {configHtmlPlugin} from './html';
-import {configPwaConfig} from './pwa';
-import {configMockPlugin} from './mock';
-import {configCompressPlugin} from './compress';
-import {configStyleImportPlugin} from './styleImport';
-import {configVisualizerConfig} from './visualizer';
-import {configThemePlugin} from './theme';
-import {configImageminPlugin} from './imagemin';
-import {configSvgIconsPlugin} from './svgSprite';
-import {configHmrPlugin} from './hmr';
+import windiCSS from 'vite-plugin-windicss';
+import { configHtmlPlugin } from './html';
+import { configPwaConfig } from './pwa';
+import { configMockPlugin } from './mock';
+import { configCompressPlugin } from './compress';
+import { configStyleImportPlugin } from './styleImport';
+import { configVisualizerConfig } from './visualizer';
+import { configThemePlugin } from './theme';
+import { configImageminPlugin } from './imagemin';
+import { configSvgIconsPlugin } from './svgSprite';
+import { configHmrPlugin } from './hmr';
 
 export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     const {
@@ -32,26 +30,14 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
         // have to
         vueJsx(),
     ];
+    // vite-plugin-windicss
+    vitePlugins.push(windiCSS());
 
     // TODO
     !isBuild && vitePlugins.push(configHmrPlugin());
 
     // @vitejs/plugin-legacy
-    VITE_LEGACY &&
-    isBuild &&
-    vitePlugins.push(
-        legacy({
-            targets: [
-                'Android > 39',
-                'Chrome >= 60',
-                'Safari >= 10.1',
-                'iOS >= 10.3',
-                'Firefox >= 54',
-                'Edge >= 15',
-            ],
-            additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
-        })
-    );
+    VITE_LEGACY && isBuild && vitePlugins.push(legacy());
 
     // vite-plugin-html
     vitePlugins.push(configHtmlPlugin(viteEnv, isBuild));

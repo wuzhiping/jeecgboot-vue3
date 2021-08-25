@@ -1,43 +1,62 @@
 <template>
     <div :class="prefixCls">
-        <div v-show="!isEdit" :class="{ [`${prefixCls}__normal`]: true, 'ellipsis-cell': column.ellipsis }" @click="handleEdit">
-            <div class="cell-content" :title="column.ellipsis ? getValues || '' : ''">{{getValues || '&nbsp;'}}
-            </div>
-            <FormOutlined :class="`${prefixCls}__normal-icon`" v-if="!column.editRow"/>
+        <div
+                v-show="!isEdit"
+                :class="{ [`${prefixCls}__normal`]: true, 'ellipsis-cell': column.ellipsis }"
+                @click="handleEdit"
+        >
+            <div class="cell-content" :title="column.ellipsis ? getValues ?? '' : ''">{{
+                getValues ? getValues : '&nbsp;'
+                }}</div>
+            <FormOutlined :class="`${prefixCls}__normal-icon`" v-if="!column.editRow" />
         </div>
 
-        <div v-if="isEdit" :class="`${prefixCls}__wrapper`" v-click-outside="onClickOutside">
-            <CellComponent v-bind="getComponentProps" :component="getComponent" :style="getWrapperStyle" :popoverVisible="getRuleVisible" :rule="getRule" :ruleMessage="ruleMessage" :class="getWrapperClass" size="small" ref="elRef" @change="handleChange" @options-change="handleOptionsChange" @pressEnter="handleEnter"/>
-            <div :class="`${prefixCls}__action`" v-if="!getRowEditable">
-                <CheckOutlined :class="[`${prefixCls}__icon`, 'mx-2']" @click="handleSubmit"/>
-                <CloseOutlined :class="`${prefixCls}__icon `" @click="handleCancel"/>
+        <a-spin v-if="isEdit" :spinning="spinning">
+            <div :class="`${prefixCls}__wrapper`" v-click-outside="onClickOutside">
+                <CellComponent
+                        v-bind="getComponentProps"
+                        :component="getComponent"
+                        :style="getWrapperStyle"
+                        :popoverVisible="getRuleVisible"
+                        :rule="getRule"
+                        :ruleMessage="ruleMessage"
+                        :class="getWrapperClass"
+                        ref="elRef"
+                        @change="handleChange"
+                        @options-change="handleOptionsChange"
+                        @pressEnter="handleEnter"
+                />
+                <div :class="`${prefixCls}__action`" v-if="!getRowEditable">
+                    <CheckOutlined :class="[`${prefixCls}__icon`, 'mx-2']" @click="handleSubmitClick" />
+                    <CloseOutlined :class="`${prefixCls}__icon `" @click="handleCancel" />
+                </div>
             </div>
-        </div>
+        </a-spin>
     </div>
 </template>
 <script lang="ts">
-    import type {CSSProperties, PropType} from 'vue';
-    import type {BasicColumn} from '../../types/table';
-    import type {EditRecordRow} from './index';
+    import type { CSSProperties, PropType } from 'vue';
+    import { computed, defineComponent, nextTick, ref, toRaw, unref, watchEffect } from 'vue';
+    import type { BasicColumn } from '../../types/table';
+    import type { EditRecordRow } from './index';
+    import { CheckOutlined, CloseOutlined, FormOutlined } from '@ant-design/icons-vue';
+    import { CellComponent } from './CellComponent';
 
-    import {defineComponent, ref, unref, nextTick, computed, watchEffect, toRaw} from 'vue';
-    import {FormOutlined, CloseOutlined, CheckOutlined} from '@ant-design/icons-vue';
-    import {CellComponent} from './CellComponent';
-
-    import {useDesign} from '/@/hooks/web/useDesign';
-    import {useTableContext} from '../../hooks/useTableContext';
+    import { useDesign } from '/@/hooks/web/useDesign';
+    import { useTableContext } from '../../hooks/useTableContext';
 
     import clickOutside from '/@/directives/clickOutside';
 
-    import {propTypes} from '/@/utils/propTypes';
-    import {isString, isBoolean, isFunction, isNumber, isArray} from '/@/utils/is';
-    import {createPlaceholderMessage} from './helper';
-    import {set, omit} from 'lodash-es';
-    import {treeToList} from '/@/utils/helper/treeHelper';
+    import { propTypes } from '/@/utils/propTypes';
+    import { isArray, isBoolean, isFunction, isNumber, isString } from '/@/utils/is';
+    import { createPlaceholderMessage } from './helper';
+    import { omit, pick, set } from 'lodash-es';
+    import { treeToList } from '/@/utils/helper/treeHelper';
+    import { Spin } from 'ant-design-vue';
 
     export default defineComponent({
         name: 'EditableCell',
-        components: {FormOutlined, CloseOutlined, CheckOutlined, CellComponent},
+        components: { FormOutlined, CloseOutlined, CheckOutlined, CellComponent, ASpin: Spin },
         directives: {
             clickOutside,
         },
@@ -64,8 +83,9 @@
             const optionsRef = ref<LabelValueOptions>([]);
             const currentValueRef = ref<any>(props.value);
             const defaultValueRef = ref<any>(props.value);
+            const spinning = ref<boolean>(false);
 
-            const {prefixCls} = useDesign('editable-cell');
+            const { prefixCls } = useDesign('editable-cell');
 
             const getComponent = computed(() => props.column?.editComponent || 'Input');
             const getRule = computed(() => props.column?.editRule);
@@ -95,6 +115,7 @@
                 const value = isCheckValue ? (isNumber(val) && isBoolean(val) ? val : !!val) : val;
 
                 return {
+                    size: 'small',
                     getPopupContainer: () => unref(table?.wrapRef.value) ?? document.body,
                     getCalendarContainer: () => unref(table?.wrapRef.value) ?? document.body,
                     placeholder: createPlaceholderMessage(unref(getComponent)),
@@ -105,7 +126,7 @@
             });
 
             const getValues = computed(() => {
-                const {editComponentProps, editValueMap} = props.column;
+                const { editComponentProps, editValueMap } = props.column;
 
                 const value = unref(currentValueRef);
 
@@ -134,12 +155,12 @@
             });
 
             const getWrapperClass = computed(() => {
-                const {align = 'center'} = props.column;
+                const { align = 'center' } = props.column;
                 return `edit-cell-align-${align}`;
             });
 
             const getRowEditable = computed(() => {
-                const {editable} = props.record || {};
+                const { editable } = props.record || {};
                 return !!editable;
             });
 
@@ -149,7 +170,7 @@
             });
 
             watchEffect(() => {
-                const {editable} = props.column;
+                const { editable } = props.column;
                 if (isBoolean(editable) || isBoolean(unref(getRowEditable))) {
                     isEdit.value = !!editable || unref(getRowEditable);
                 }
@@ -188,16 +209,15 @@
             }
 
             async function handleSubmiRule() {
-                const {column, record} = props;
-                const {editRule} = column;
+                const { column, record } = props;
+                const { editRule } = column;
                 const currentValue = unref(currentValueRef);
 
                 if (editRule) {
                     if (isBoolean(editRule) && !currentValue && !isNumber(currentValue)) {
                         ruleVisible.value = true;
                         const component = unref(getComponent);
-                        const message = createPlaceholderMessage(component);
-                        ruleMessage.value = message;
+                        ruleMessage.value = createPlaceholderMessage(component);
                         return false;
                     }
                     if (isFunction(editRule)) {
@@ -222,17 +242,46 @@
                     if (!isPass) return false;
                 }
 
-                const {column, index, record} = props;
+                const { column, index, record } = props;
                 if (!record) return false;
-                const {key, dataIndex} = column;
+                const { key, dataIndex } = column;
                 const value = unref(currentValueRef);
                 if (!key || !dataIndex) return;
 
                 const dataKey = (dataIndex || key) as string;
 
+                if (!record.editable) {
+                    const { getBindValues } = table;
+
+                    const { beforeEditSubmit, columns } = unref(getBindValues);
+
+                    if (beforeEditSubmit && isFunction(beforeEditSubmit)) {
+                        spinning.value = true;
+                        const keys: string[] = columns
+                            .map((_column) => _column.dataIndex)
+                            .filter((field) => !!field) as string[];
+                        let result: any = true;
+                        try {
+                            result = await beforeEditSubmit({
+                                record: pick(record, keys),
+                                index,
+                                key,
+                                value,
+                            });
+                        } catch (e) {
+                            result = false;
+                        } finally {
+                            spinning.value = false;
+                        }
+                        if (result === false) {
+                            return;
+                        }
+                    }
+                }
+
                 set(record, dataKey, value);
                 //const record = await table.updateTableData(index, dataKey, value);
-                needEmit && table.emit?.('edit-end', {record, index, key, value});
+                needEmit && table.emit?.('edit-end', { record, index, key, value });
                 isEdit.value = false;
             }
 
@@ -243,11 +292,15 @@
                 handleSubmit();
             }
 
+            function handleSubmitClick() {
+                handleSubmit();
+            }
+
             function handleCancel() {
                 isEdit.value = false;
                 currentValueRef.value = defaultValueRef.value;
-                const {column, index, record} = props;
-                const {key, dataIndex} = column;
+                const { column, index, record } = props;
+                const { key, dataIndex } = column;
                 table.emit?.('edit-cancel', {
                     record,
                     index,
@@ -269,11 +322,11 @@
 
             // only ApiSelect or TreeSelect
             function handleOptionsChange(options: LabelValueOptions) {
-                const {replaceFields} = props.column?.editComponentProps ?? {};
+                const { replaceFields } = props.column?.editComponentProps ?? {};
                 const component = unref(getComponent);
                 if (component === 'ApiTreeSelect') {
-                    const {title = 'title', value = 'value', children = 'children'} = replaceFields || {};
-                    let listOptions: Recordable[] = treeToList(options, {children});
+                    const { title = 'title', value = 'value', children = 'children' } = replaceFields || {};
+                    let listOptions: Recordable[] = treeToList(options, { children });
                     listOptions = listOptions.map((item) => {
                         return {
                             label: item[title],
@@ -347,7 +400,8 @@
                 getRowEditable,
                 getValues,
                 handleEnter,
-                // getSize,
+                handleSubmitClick,
+                spinning,
             };
         },
     });
@@ -387,7 +441,6 @@
             border-radius: 2px;
         }
     }
-
     .@{prefix-cls} {
         position: relative;
 

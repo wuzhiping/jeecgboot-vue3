@@ -6,14 +6,16 @@
           <template #title>
             <div class="title">
               <a-typography-paragraph
-                @click="handleTitleClick(item)"
-                style="width: 100%; margin-bottom: 0 !important"
-                :style="{ cursor: isTitleClickable ? 'pointer' : '' }"
-                :delete="!!item.titleDelete"
-                :ellipsis="
-                  $props.titleRows > 0 ? { rows: $props.titleRows, tooltip: item.title } : false
+                      @click="handleTitleClick(item)"
+                      style="width: 100%; margin-bottom: 0 !important"
+                      :style="{ cursor: isTitleClickable ? 'pointer' : '' }"
+                      :delete="!!item.titleDelete"
+                      :ellipsis="
+                  $props.titleRows && $props.titleRows > 0
+                    ? { rows: $props.titleRows, tooltip: !!item.title }
+                    : false
                 "
-                :content="item.title"
+                      :content="item.title"
               />
               <div class="extra" v-if="item.extra">
                 <a-tag class="tag" :color="item.color">
@@ -32,13 +34,13 @@
             <div>
               <div class="description" v-if="item.description">
                 <a-typography-paragraph
-                  style="width: 100%; margin-bottom: 0 !important"
-                  :ellipsis="
-                    $props.descRows > 0
-                      ? { rows: $props.descRows, tooltip: item.description }
+                        style="width: 100%; margin-bottom: 0 !important"
+                        :ellipsis="
+                    $props.descRows && $props.descRows > 0
+                      ? { rows: $props.descRows, tooltip: !!item.description }
                       : false
                   "
-                  :content="item.description"
+                        :content="item.description"
                 />
               </div>
               <div class="datetime">
@@ -97,16 +99,15 @@
       const current = ref(props.currentPage || 1);
       const getData = computed(() => {
         const { pageSize, list } = props;
-        console.log('refreshData', list);
         if (pageSize === false) return [];
         let size = isNumber(pageSize) ? pageSize : 5;
         return list.slice(size * (unref(current) - 1), size * unref(current));
       });
       watch(
-        () => props.currentPage,
-        (v) => {
-          current.value = v;
-        }
+              () => props.currentPage,
+              (v) => {
+                current.value = v;
+              }
       );
       const isTitleClickable = computed(() => !!props.onTitleClick);
       const getPagination = computed(() => {
