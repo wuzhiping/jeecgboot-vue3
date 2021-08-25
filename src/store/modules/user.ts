@@ -14,7 +14,6 @@ import { router } from '/@/router';
 import { usePermissionStore } from '/@/store/modules/permission';
 import { RouteRecordRaw } from 'vue-router';
 import { PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
-
 interface UserState {
   userInfo: Nullable<UserInfo>;
   token?: string;
@@ -123,11 +122,11 @@ export const useUserStore = defineStore({
       }
     },
     async getUserInfoAction(): Promise<UserInfo> {
-      const userInfo = await getUserInfo();
+      const  userInfo = await getUserInfo();
       const { roles } = userInfo;
       const roleList = roles.map((item) => item.value) as RoleEnum[];
-      this.setUserInfo(userInfo);
       this.setRoleList(roleList);
+      this.setUserInfo(userInfo);
       return userInfo;
     },
     /**
