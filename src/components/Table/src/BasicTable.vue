@@ -420,5 +420,10 @@
                 padding: 12px 8px;
             }
         }
+        //表格选择工具栏样式
+        .alert {
+            height: 38px;
+            margin-left: -5px
+        }
     }
 </style>
