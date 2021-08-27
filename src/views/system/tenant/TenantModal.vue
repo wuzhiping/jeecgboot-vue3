@@ -12,11 +12,11 @@
     import {useMessage} from "/@/hooks/web/useMessage";
     import {defineEmits} from 'vue'
     // 获取emit
-    const emit = defineEmits(['success', 'register']);
+    const emit = defineEmits(['success']);
     const isUpdate = ref(true);
     //表单配置
     const [registerForm, {resetFields, setFieldsValue, validate}] = useForm({
-        labelWidth: 100,
+        labelWidth: 150,
         schemas: formSchema,
         showActionButtonGroup: false,
     });
@@ -28,7 +28,7 @@
         isUpdate.value = !!data?.isUpdate;
         if (unref(isUpdate)) {
             //获取详情
-            data.record = await getById({id: data.record.id});
+            data.record = await getTenantById({id: data.record.id});
             //表单赋值
             await setFieldsValue({
                 ...data.record,
