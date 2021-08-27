@@ -34,15 +34,14 @@
     "gen:icon": "esno ./build/generate/icon/index.ts"
   },
   "dependencies": {
-    "@antv/data-set": "^0.11.8",
+    "@iconify/iconify": "^2.0.4",
+    "@logicflow/core": "^0.6.15",
+    "@logicflow/extension": "^0.6.15",
     "@fullcalendar/core": "^5.8.0",
     "@fullcalendar/daygrid": "^5.8.0",
     "@fullcalendar/interaction": "^5.8.0",
     "@fullcalendar/timegrid": "^5.8.0",
     "@fullcalendar/vue3": "^5.8.0",
-    "@iconify/iconify": "^2.0.4",
-    "@logicflow/core": "^0.6.15",
-    "@logicflow/extension": "^0.6.15",
     "@vueuse/core": "^6.0.0",
     "@zxcvbn-ts/core": "^1.0.0-beta.0",
     "ant-design-vue": "^2.2.6",

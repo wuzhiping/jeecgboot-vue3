@@ -65,10 +65,10 @@ export const isAccountExist = (account: string) =>
     defHttp.post({url: Api.IsAccountExist, params: {account}}, {errorMessageMode: 'none'});
 
 export const isRoleExist = (params) =>
-    defHttp.get({url: Api.isRoleExist, params},{isTransformResponse:false});
+    defHttp.get({url: Api.isRoleExist, params}, {isTransformResponse: false});
 
 export const duplicateCheck = (params) =>
-    defHttp.get({url: Api.duplicateCheck, params},{isTransformResponse:false});
+    defHttp.get({url: Api.duplicateCheck, params}, {isTransformResponse: false});
 
 export const getUserListByPage = (params?: UserPageParams) =>
     defHttp.get({url: Api.UserList, params});
@@ -77,31 +77,31 @@ export const getRolesListByPage = (params?: RolePageParams) =>
     defHttp.get<RolePageListGetResultModel>({url: Api.RolesList, params});
 
 export const getAllRolesList = (params?: RoleParams) =>
-   defHttp.get<RoleListGetResultModel>({url: Api.allRolesList, params});
+    defHttp.get<RoleListGetResultModel>({url: Api.allRolesList, params});
 
 export const getAllTenantList = (params?: RoleParams) =>
-   defHttp.get({url: Api.allTenantList, params});
+    defHttp.get({url: Api.allTenantList, params});
 
 export const getUserRoles = (params) =>
-   defHttp.get({url: Api.getUserRole, params}, {errorMessageMode: 'none'});
+    defHttp.get({url: Api.getUserRole, params}, {errorMessageMode: 'none'});
 
-export const getAllPostList = (params) =>{
-  return new Promise((resolve, reject) => {
-    defHttp.get({url: Api.allPostList, params}).then(res=>{
-      resolve(res.records)
-    });
-  })
+export const getAllPostList = (params) => {
+    return new Promise((resolve, reject) => {
+        defHttp.get({url: Api.allPostList, params}).then(res => {
+            resolve(res.records)
+        });
+    })
 }
 
 /**
  * 提交信息
  * @param params
  */
-export const formSubmit = (params) =>{
-   if(params.id){
-       defHttp.put({url: params.url, params})
-   }else{
-      defHttp.post({url: params.url, params})
-   }
+export const formSubmit = (params) => {
+    if (params.id) {
+        defHttp.put({url: params.url, params})
+    } else {
+        defHttp.post({url: params.url, params})
+    }
 }
-  
+

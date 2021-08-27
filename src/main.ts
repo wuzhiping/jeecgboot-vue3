@@ -1,6 +1,5 @@
 import '/@/design/index.less';
 // 注册 windi
-// import 'virtual:windi.css';
 import 'virtual:windi-base.css';
 import 'virtual:windi-components.css';
 import 'virtual:windi-utilities.css';
@@ -20,7 +19,7 @@ import {registerGlobComp} from '/@/components/registerGlobComp';
 import {registerThirdComp} from '/@/settings/registerThirdComp';
 // 在本地开发中引入的,以提高浏览器响应速度
 if (import.meta.env.DEV) {
-    import('ant-design-vue/dist/antd.less');
+    //import('ant-design-vue/dist/antd.less');
 }
 async function bootstrap() {
     // 创建应用实例

@@ -123,10 +123,12 @@ export const useUserStore = defineStore({
     },
     async getUserInfoAction(): Promise<UserInfo> {
       const  userInfo = await getUserInfo();
-      const { roles } = userInfo;
-      const roleList = roles.map((item) => item.value) as RoleEnum[];
-      this.setRoleList(roleList);
-      this.setUserInfo(userInfo);
+      if(userInfo) {
+        const {roles} = userInfo;
+        const roleList = roles.map((item) => item.value) as RoleEnum[];
+        this.setRoleList(roleList);
+        this.setUserInfo(userInfo);
+      }
       return userInfo;
     },
     /**

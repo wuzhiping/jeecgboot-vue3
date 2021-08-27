@@ -4,11 +4,11 @@ import { LoginParams, LoginResultModel, GetUserInfoModel } from './model/userMod
 import { ErrorMessageMode } from '/#/axios';
 
 enum Api {
- 
+
   Login = '/sys/login',
   Logout = '/sys/logout',
-  GetUserInfo = '/sys/getUserInfo',
-  GetPermCode = '/getPermCode',
+  GetUserInfo = '/sys/user/getUserInfo',
+  GetPermCode = '/sys/permission/getPermCode',
   //新加的获取验证码的接口
   getInputCode = '/sys/randomImage'
 }

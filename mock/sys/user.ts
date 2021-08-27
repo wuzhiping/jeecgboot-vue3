@@ -70,7 +70,7 @@ export default [
     },
   },
   {
-    url: '/jeecg-boot/sys/getUserInfo',
+    url: '/jeecg-boot/sys/user/getUserInfo',
     method: 'get',
     response: (request: requestParams) => {
       const token = getRequestToken(request);
@@ -83,7 +83,7 @@ export default [
     },
   },
   {
-    url: '/jeecg-boot/getPermCode',
+    url: '/jeecg-boot/sys/permission/getPermCode',
     timeout: 200,
     method: 'get',
     response: (request: requestParams) => {
