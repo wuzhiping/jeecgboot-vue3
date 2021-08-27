@@ -20,6 +20,8 @@ export default {
     errMsg503: '服务不可用，服务器暂时过载或维护!',
     errMsg504: '网络超时!',
     errMsg505: 'http版本不支持该请求!',
+
+    registerMsg:'注册成功',
   },
   app: { logoutTip: '温馨提醒', logoutMessage: '是否确认退出系统?', menuLoading: '菜单加载中...' },
   errorLog: {
@@ -96,5 +98,7 @@ export default {
     email: '邮箱',
     smsCode: '短信验证码',
     mobile: '手机号码',
+
+    subTitleText:'{0}秒后返回登录页面',
   },
 };

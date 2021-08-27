@@ -1,6 +1,6 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
-import { getAllRolesList, duplicateCheck ,getAllTenantList,getAllPostList} from "/@/api/demo/system";
+import { getAllRolesList, duplicateCheck ,getAllTenantList,getAllPostList} from "./user.api";
 import { uploadApi } from '/@/api/sys/upload';
 import {h} from 'vue';
 import {Avatar} from 'ant-design-vue';
@@ -65,7 +65,6 @@ export const formSchema: FormSchema[] = [
               };
               duplicateCheck(params)
                 .then((res) => {
-                  console.log("result=======>duplicateCheck",res)
                   res.success? resolve(): reject(res.message || '校验失败');
                 }).catch((err) => {
                 reject(err.message || '验证失败');

@@ -1,6 +1,6 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
-import { isRoleExist, setRoleStatus} from '/@/api/demo/system';
+import { isRoleExist } from './role.api';
 
 export const columns: BasicColumn[] = [
   {
@@ -59,7 +59,6 @@ export const formSchema: FormSchema[] = [
               return new Promise((resolve, reject) => {
                 isRoleExist({id:model.id,roleCode:value})
                   .then((res) => {
-                    console.log("result=======>11111",res)
                     res.success? resolve(): reject(res.message || '校验失败');
                   }).catch((err) => {
                   reject(err.message || '验证失败');

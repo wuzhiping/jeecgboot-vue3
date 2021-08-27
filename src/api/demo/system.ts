@@ -26,15 +26,6 @@ enum Api {
     DemoTableList = '/system/getDemoTableListByPage',
     TestPageList = '/system/getTestListByPage',
     GetAllRoleList = '/system/getAllRoleList',
-    //新增页面所需要的接口
-    UserList = '/sys/user/list',
-    duplicateCheck = '/sys/duplicate/check',
-    RolesList = '/sys/role/list',
-    allRolesList = '/sys/role/queryall',
-    isRoleExist = '/sys/role/checkRoleCode',
-    allTenantList = '/sys/tenant/queryList',
-    allPostList = '/sys/position/list',
-    getUserRole = '/sys/user/queryUserRole',
 }
 
 export const getAccountList = (params: AccountParams) =>
@@ -65,10 +56,7 @@ export const isAccountExist = (account: string) =>
     defHttp.post({url: Api.IsAccountExist, params: {account}}, {errorMessageMode: 'none'});
 
 export const isRoleExist = (params) =>
-    defHttp.get({url: Api.isRoleExist, params}, {isTransformResponse: false});
-
-export const duplicateCheck = (params) =>
-    defHttp.get({url: Api.duplicateCheck, params}, {isTransformResponse: false});
+    defHttp.get({url: Api.isRoleExist, params},{isTransformResponse:false});
 
 export const getUserListByPage = (params?: UserPageParams) =>
     defHttp.get({url: Api.UserList, params});
@@ -92,16 +80,3 @@ export const getAllPostList = (params) => {
         });
     })
 }
-
-/**
- * 提交信息
- * @param params
- */
-export const formSubmit = (params) => {
-    if (params.id) {
-        defHttp.put({url: params.url, params})
-    } else {
-        defHttp.post({url: params.url, params})
-    }
-}
-

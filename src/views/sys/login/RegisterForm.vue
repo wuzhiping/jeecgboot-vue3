@@ -9,7 +9,7 @@
                 <Input size="large" v-model:value="formData.mobile" :placeholder="t('sys.login.mobile')" class="fix-auto-fill"/>
             </FormItem>
             <FormItem name="sms" class="enter-x">
-                <CountdownInput size="large" class="fix-auto-fill" v-model:value="formData.sms" :placeholder="t('sys.login.smsCode')"/>
+                <CountdownInput size="large" class="fix-auto-fill" v-model:value="formData.sms" :placeholder="t('sys.login.smsCode')" :sendCodeApi="sendCodeApi"/>
             </FormItem>
             <FormItem name="password" class="enter-x">
                 <StrengthMeter size="large" v-model:value="formData.password" :placeholder="t('sys.login.password')"/>
@@ -42,22 +42,22 @@
     </template>
 </template>
 <script lang="ts" setup>
-    import { reactive, ref, unref, computed } from 'vue';
+    import { reactive, ref, unref, computed,toRaw } from 'vue';
     import LoginFormTitle from './LoginFormTitle.vue';
     import { Form, Input, Button, Checkbox } from 'ant-design-vue';
     import { StrengthMeter } from '/@/components/StrengthMeter';
     import { CountdownInput } from '/@/components/CountDown';
     import { useI18n } from '/@/hooks/web/useI18n';
-    import { useLoginState, useFormRules, useFormValid, LoginStateEnum } from './useLogin';
-
+    import { useMessage } from '/@/hooks/web/useMessage';
+    import { useLoginState, useFormRules, useFormValid, LoginStateEnum, SmsEnum  } from './useLogin';
+    import { register,getCaptcha } from '/@/api/sys/user';
     const FormItem = Form.Item;
     const InputPassword = Input.Password;
     const { t } = useI18n();
     const { handleBackLogin, getLoginState } = useLoginState();
-
+    const { notification, createErrorModal } = useMessage();
     const formRef = ref();
     const loading = ref(false);
-
     const formData = reactive({
         account: '',
         password: '',
@@ -66,15 +66,47 @@
         sms: '',
         policy: false,
     });
-
     const { getFormRules } = useFormRules(formData);
     const { validForm } = useFormValid(formRef);
-
     const getShow = computed(() => unref(getLoginState) === LoginStateEnum.REGISTER);
-
+    /**
+     * 注册
+     */
     async function handleRegister() {
-        const data = await validForm();
-        if (!data) return;
-        console.log(data);
+      const data = await validForm();
+      if (!data) return;
+      try {
+        loading.value = true;
+        const resultInfo = await register(
+          toRaw({
+            username: data.account,
+            password: data.password,
+            phone: data.mobile,
+            smscode: data.sms
+          })
+        );
+        if (resultInfo && resultInfo.data.success) {
+          createSuccessModal({
+            content: resultInfo.data.message || t('sys.api.registerMsg'),
+          });
+          handleBackLogin();
+        }else{
+          createErrorModal({
+            title: t('sys.api.errorTip'),
+            content: resultInfo.data.message || t('sys.api.networkExceptionMsg'),
+          });
+        }
+      } catch (error) {
+        createErrorModal({
+          title: t('sys.api.errorTip'),
+          content: error.message || t('sys.api.networkExceptionMsg'),
+        });
+      } finally {
+        loading.value = false;
+      }
+    }
+    //发送验证码的函数
+    function sendCodeApi() {
+      return getCaptcha({mobile:formData.mobile,smsmode:SmsEnum.FORGET_PASSWORD});
     }
 </script>
