@@ -9,7 +9,7 @@
   import {formSchema} from './role.data';
   import {BasicDrawer, useDrawerInner} from '/@/components/Drawer';
   import {BasicTree, TreeItem} from '/@/components/Tree';
-  import {formSubmit} from './role.api';
+  import {saveOrUpdateRole} from './role.api';
   // 获取emit
   const emit = defineEmits(['success', 'register']);
   const isUpdate = ref(true);
