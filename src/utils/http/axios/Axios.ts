@@ -77,7 +77,7 @@ export class VAxios {
 
     const axiosCanceler = new AxiosCanceler();
 
-    // Request interceptor configuration processing
+    // 请求侦听器配置处理
     this.axiosInstance.interceptors.request.use((config: AxiosRequestConfig) => {
       // If cancel repeat request is turned on, then cancel repeat request is prohibited
       const {
@@ -96,12 +96,12 @@ export class VAxios {
       return config;
     }, undefined);
 
-    // Request interceptor error capture
+    // 请求拦截器错误捕获
     requestInterceptorsCatch &&
       isFunction(requestInterceptorsCatch) &&
       this.axiosInstance.interceptors.request.use(undefined, requestInterceptorsCatch);
 
-    // Response result interceptor processing
+    // 响应结果拦截器处理
     this.axiosInstance.interceptors.response.use((res: AxiosResponse<any>) => {
       res && axiosCanceler.removePending(res.config);
       if (responseInterceptors && isFunction(responseInterceptors)) {
@@ -110,7 +110,7 @@ export class VAxios {
       return res;
     }, undefined);
 
-    // Response result interceptor error capture
+    // 响应结果拦截器错误捕获
     responseInterceptorsCatch &&
       isFunction(responseInterceptorsCatch) &&
       this.axiosInstance.interceptors.response.use(undefined, responseInterceptorsCatch);
@@ -154,7 +154,7 @@ export class VAxios {
     });
   }
 
-  // support form-data
+  // 支持表单数据
   supportFormData(config: AxiosRequestConfig) {
     const headers = config.headers || this.options.headers;
     const contentType = headers?.['Content-Type'] || headers?.['content-type'];
@@ -212,6 +212,9 @@ export class VAxios {
           if (transformRequestHook && isFunction(transformRequestHook)) {
             try {
               const ret = transformRequestHook(res, opt);
+              //zhangyafei---添加回调方法
+              config.success&&config.success(res.data);
+              //zhangyafei---添加回调方法
               resolve(ret);
             } catch (err) {
               reject(err || new Error('request error!'));
@@ -226,7 +229,7 @@ export class VAxios {
             return;
           }
           if (axios.isAxiosError(e)) {
-            // rewrite error message from axios in here
+            // 在此处重写来自axios的错误消息
           }
           reject(e);
         });
