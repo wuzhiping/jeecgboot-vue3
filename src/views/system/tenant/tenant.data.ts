@@ -79,7 +79,6 @@ export const formSchema: FormSchema[] = [
         field: 'beginDate',
         label: '开始时间',
         component: 'DatePicker',
-        required: true,
         componentProps: {
             showTime:true,
             valueFormat:'YYYY-MM-DD HH:mm:ss',
@@ -90,7 +89,6 @@ export const formSchema: FormSchema[] = [
         field: 'endDate',
         label: '结束时间',
         component: 'DatePicker',
-        required: true,
         componentProps: {
             showTime:true,
             valueFormat:'YYYY-MM-DD HH:mm:ss',
@@ -108,6 +106,5 @@ export const formSchema: FormSchema[] = [
                 {label: '冻结', value: 0},
             ],
         },
-        required: true,
     },
 ];
