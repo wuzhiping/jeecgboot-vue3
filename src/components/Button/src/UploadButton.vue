@@ -1,17 +1,19 @@
 <template>
-    <Button v-bind="getBindValue" :class="getButtonClass" @click="onClick">
+    <a-upload name="file" :showUploadList="false"  :customRequest="(file)=>onClick(file)">
+      <Button :type="type" :class="getButtonClass" >
         <template #default="data">
-            <Icon :icon="preIcon" v-if="preIcon" :size="iconSize" />
-            <slot v-bind="data || {}"></slot>
-            <Icon :icon="postIcon" v-if="postIcon" :size="iconSize" />
+          <Icon :icon="preIcon" v-if="preIcon" :size="iconSize" />
+          <slot v-bind="data || {}"></slot>
+          <Icon :icon="postIcon" v-if="postIcon" :size="iconSize" />
         </template>
-    </Button>
+      </Button>
+    </a-upload>
 </template>
 
 <script lang="ts">
     import { defineComponent } from 'vue';
     export default defineComponent({
-        name: 'AButton',
+        name: 'JUploadButton',
         inheritAttrs: false,
     });
 </script>
