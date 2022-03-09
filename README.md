@@ -12,15 +12,18 @@ JEECG BOOT 低代码平台（Vue3前端版本）
 ## 简介
 Jeecg-Boot-Vue3 是在 Vben-Admin 基础上研发的，适合于JeecgBoot的新版前端VUE3框架。
  采用 Vue3.0、Vite、 Ant-Design-Vue、TypeScript 等新技术方案，包括二次封装组件、utils、hooks、动态菜单、权限校验、按钮级别权限控制等功能。
->[danger]  全新的VUE3技术栈，不只是追赶技术潮流，用了之后才能体会到Vue3的好处，的确比2更加适合大型项目。
+ 
+> 全新的VUE3技术栈，不只是追赶技术潮流，用了之后才能体会到Vue3的好处，的确比2更加适合大型项目。
 
 
 ##### 源码下载：
 
+
 |     |   后端源码   | vue3前端源码  |
-|---  |--- | --- |--- |
+|---  |--- | --- |
 |  github   | https://github.com/jeecgboot/jeecg-boot/tree/master/jeecg-boot   | https://github.com/jeecgboot/jeecg-boot-vue3  |
 |  码云   |  https://gitee.com/jeecg/jeecg-boot/tree/master/jeecg-boot   |  https://github.com/jeecgboot/jeecg-boot-vue3  |
+
 
 ##### 相关文档：
 
