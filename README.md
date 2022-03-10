@@ -26,9 +26,9 @@ JeecgBoot-Vue3采用 Vue3.0、Vite、 Ant-Design-Vue、TypeScript 等新技术�
 
 *  在线演示：http://boot3.jeecg.com
 *  QQ交流群：683903138
-*  JeecgBoot-Vue3文档：http://vue3.jeecg.com
-*  Antd-vue文档： [Ant-Design-Vue文档](https://2x.antdv.com/docs/vue/getting-started-cn) 
-*  Vben文档：[https://vvbin.cn/doc-next](https://vvbin.cn/doc-next/)
+*  开发文档：http://vue3.jeecg.com
+*  antd-vue文档： [https://2x.antdv.com](https://2x.antdv.com/docs/vue/getting-started-cn) 
+*  vben文档：[https://vvbin.cn/doc-next](https://vvbin.cn/doc-next/)
 
 ## Install and use
 
