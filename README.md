@@ -34,7 +34,7 @@ JeecgBoot-Vue3采用 Vue3.0、Vite、 Ant-Design-Vue、TypeScript 等新技术�
 |  码云   |  https://gitee.com/jeecg/jeecg-boot   | https://gitee.com/jeecg/jeecgboot-vue3  |
 
 
-## Install and use
+## 安装与使用
 
 
   
